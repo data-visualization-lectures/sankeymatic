@@ -421,29 +421,29 @@ Budget [160] Other Necessities #0F0
 <div class="expandable_box">
 <h2 class="ui_head" onclick="togglePanel('diagram_options');">
 <span id="diagram_options_indicator" class="indicator">&ndash;</span>
-Diagram Size &amp; Background<span id="diagram_options_hint">:</span></h2>
+ダイアグラムのサイズ &amp; 背景<span id="diagram_options_hint">:</span></h2>
 
 <div id="diagram_options" class="form_chunk">
 <p class="form_elements1">
-<span class="no_wrap"><label for="size_w" title="Diagram Width in pixels"><strong>Width:</strong></label>
+<span class="no_wrap"><label for="size_w" title="Diagram Width in pixels"><strong>横幅:</strong></label>
 <input id="size_w" type="number" class="wholenumber number_10000s" min="40" value="600" step="2" onchange="process_sankey();"></span>
-<span class="no_wrap"><label for="size_h" class="spaced_label" title="Diagram Height in pixels"><strong>Height:</strong></label>
+<span class="no_wrap"><label for="size_h" class="spaced_label" title="Diagram Height in pixels"><strong>縦幅:</strong></label>
 <input id="size_h" type="number" class="wholenumber number_10000s" min="40" value="600" step="2" onchange="process_sankey();"></span>
 
-<label for="bg_color" class="spaced_label"><strong>Background Color:</strong></label>
+<label for="bg_color" class="spaced_label"><strong>背景色:</strong></label>
 <input type="color" id="bg_color" size="7" maxlength="7" value="#FFFFFF" onchange="process_sankey();">
-<input type="checkbox" id="bg_transparent" value="1" onchange="process_sankey();" class="spaced_checkbox"><label for="bg_transparent" class="ropt">Transparent</label><br />
+<input type="checkbox" id="bg_transparent" value="1" onchange="process_sankey();" class="spaced_checkbox"><label for="bg_transparent" class="ropt">透過</label><br />
 </p>
 
 <p class="form_elements2">
-<strong>Margins:</strong>
-<span class="no_wrap"><label for="margin_l" class="spaced_label">Left</label>
+<strong>マージン:</strong>
+<span class="no_wrap"><label for="margin_l" class="spaced_label">左</label>
 <input id="margin_l" type="number" class="wholenumber number_100s" min="0" value="12" step="1" onchange="process_sankey();">
-<label for="margin_r">Right</label>
+<label for="margin_r">右</label>
 <input id="margin_r" type="number" class="wholenumber number_100s" min="0" value="12" step="1" onchange="process_sankey();"></span>
-<span class="no_wrap"><label for="margin_t" class="spaced_label">Top</label>
+<span class="no_wrap"><label for="margin_t" class="spaced_label">上</label>
 <input id="margin_t" type="number" class="wholenumber number_100s" min="0" value="18" step="1" onchange="process_sankey();">
-<label for="margin_b">Bot</label>
+<label for="margin_b">下</label>
 <input id="margin_b" type="number" class="wholenumber number_100s" min="0" value="20" step="1" onchange="process_sankey();"></span>
 </p>
 </div>
@@ -452,24 +452,24 @@ Diagram Size &amp; Background<span id="diagram_options_hint">:</span></h2>
 <!-- EXPORT -->
 <div class="expandable_box">
 <p id="download_central" class="form_box">
-<strong>Export:</strong> Save as:
-<button id="save_as_png_2x" type="submit" title="PNG image file: 1200 x 1200" onclick="saveDiagramAsPNG(2); return false;"><strong>.PNG image</strong></button>
+<strong>Export:</strong>
+<button id="save_as_png_2x" type="submit" title="PNG image file: 1200 x 1200" onclick="saveDiagramAsPNG(2); return false;"><strong>PNG</strong></button>
 <span class="toggleable" onclick="togglePanel('png_size_options');" title="Select to choose another resolution">
 <span id="png_size_options_indicator" class="indicator1">+</span>
-<small>more</small><span id="png_size_options_hint">...</span></span>
+<small>オプション</small><span id="png_size_options_hint">...</span></span>
 <span id="png_size_options" style="display: none;">
 <button id="save_as_png_4x" type="submit" title="PNG image file: 2400 x 2400" onclick="saveDiagramAsPNG(4); return false;"><strong>Large</strong> (4x)</button>
 <button id="save_as_png_6x" type="submit" title="PNG image file: 3600 x 3600" onclick="saveDiagramAsPNG(6); return false;"><strong>Huge</strong> (6x)</button>
 <button id="save_as_png_1x" type="submit" title="PNG image file: 600 x 600" onclick="saveDiagramAsPNG(1); return false;"><strong>Tiny</strong> (1x)</button>
 </span>
-<span style="padding-left: 0.4em; padding-right: 0.4em;">or</span>
-<button id="save_as_svg" type="submit" title="Save this diagram as a Scalable Vector Graphics file" onclick="saveDiagramAsSVG(); return false;"><strong>Download .SVG</strong></button>
+<span style="padding-left: 0.4em; padding-right: 0.4em;">もしくは</span>
+<button id="save_as_svg" type="submit" title="Save this diagram as a Scalable Vector Graphics file" onclick="saveDiagramAsSVG(); return false;"><strong>SVG</strong></button>
 </p>
 </div>
 
 <!-- MOVING NODES -->
 <p id="reset_moves_area" class="form_elements1">
-Move Nodes by <em>dragging</em>. Double-click a Node to reset, or: <button type="button" id="reset_all_moved_nodes" onclick="resetMovesAndRender(); return false;">Reset all moved Nodes</button>
+  <em>ドラッグして</em>ノードを移動します。<em></em>ダブルクリック</em>でそのノードの配置をリセットします。<button type="button" id="reset_all_moved_nodes" onclick="resetMovesAndRender(); return false;">すべてのノードの配置をリセット</button>
 </p>
 <div id="top_messages_container">
   <div id="info_messages"></div>
@@ -484,28 +484,28 @@ Move Nodes by <em>dragging</em>. Double-click a Node to reset, or: <button type=
 <div id="chartfooter">
 <p class="form_elements1 center_content">
 <input type="checkbox" id="meta_mentionsankeymatic" value="1" onchange="process_sankey();" checked>
-<label class="smalllabel ropt" for="meta_mentionsankeymatic">Include &ldquo;Made with SankeyMATIC&rdquo;</label>
+<label class="smalllabel ropt" for="meta_mentionsankeymatic">&ldquo;Made with SankeyMATIC&rdquo;を含める</label>
 </p>
 </div>
 <table id="messages" class="expandable_box">
 <tr><td>
   <div id="messages_area">
-    <h4>About this diagram</h4>
+    <h4>このダイアグラムについて</h4>
     <div id="totals_area"></div>
   </div>
 </td></tr>
 <tr><td id="imbalances_area">
 <div id="imbalance_control">
-<span class="underline"><strong><em>When Total Inputs &ne; Total Outputs:</em></strong></span><br>
+<span class="underline"><strong><em>トータル・インプット &ne; トータル・アウトプット</em>ではない場合:</strong></span><br>
 <p class="form_elements3">
-  Attach incomplete flow groups to:<br>
-<span><input name="layout_attachincompletesto" id="layout_attachto_leading" value="leading" type="radio" onchange="process_sankey();" /><label for="layout_attachto_leading" class="ropt">The leading edge of the Node</label></span><br>
-<span><input name="layout_attachincompletesto" id="layout_attachto_trailing" value="trailing" type="radio" onchange="process_sankey();" /><label for="layout_attachto_trailing" class="ropt">The trailing edge of the Node</label></span><br>
-<span><input name="layout_attachincompletesto" id="layout_attachto_nearest" value="nearest" type="radio" onchange="process_sankey();" checked="checked" /><label for="layout_attachto_nearest" class="ropt">The edge nearest to the flow group's center</label></span>
+  不完全なフロー・グループを以下にアタッチします:<br>
+<span><input name="layout_attachincompletesto" id="layout_attachto_leading" value="leading" type="radio" onchange="process_sankey();" /><label for="layout_attachto_leading" class="ropt">先頭のノード</label></span><br>
+<span><input name="layout_attachincompletesto" id="layout_attachto_trailing" value="trailing" type="radio" onchange="process_sankey();" /><label for="layout_attachto_trailing" class="ropt">末端のノード</label></span><br>
+<span><input name="layout_attachincompletesto" id="layout_attachto_nearest" value="nearest" type="radio" onchange="process_sankey();" checked="checked" /><label for="layout_attachto_nearest" class="ropt">フロー・グループの中心に最も近い方の端</label></span>
 </p>
 <p class="lastrow">
 <input type="checkbox" id="meta_listimbalances" value="1" onchange="process_sankey();" checked="checked" />
-<label class="ropt" for="meta_listimbalances">List all imbalanced Nodes</label>
+<label class="ropt" for="meta_listimbalances">不均衡なノードをすべてリストする</label>
 </p>
 <div id="imbalance_messages"></div>
 </div>
