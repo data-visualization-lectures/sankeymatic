@@ -300,7 +300,6 @@ Budget [160] Other Necessities #0F0
 <input type="color" id="labels_color" size="7" maxlength="7" value="#000000" onchange="process_sankey();">
 
 <span class="no_wrap output_container spaced_label" onmouseover="revealVal('labels_highlight');" onmouseout="fadeVal('labels_highlight');">
-<label for="labels_highlight" id="highlight_fld_label"><strong>Highlight:</strong></label>
 <label for="labels_highlight" id="highlight_fld_label"><strong>ハイライト:</strong></label>
 <span class="smalllabel">0</span><input id="labels_highlight" class="slider_small" type="range" min="0" max="0.9" step="0.05" value="0.55" onfocus="revealVal('labels_highlight');" onblur="fadeVal('labels_highlight');" oninput="updateOutput('labels_highlight'); process_sankey();" onchange="process_sankey();"><span class="smalllabel">最大</span>
 <output id="labels_highlight_val" for="labels_highlight" class="fade-init output_medium"></output></span>
@@ -398,14 +397,14 @@ Budget [160] Other Necessities #0F0
 <div id="debug_options" class="form_chunk" style="display: none;">
 <div class="form_elements1">
   <span class="no_wrap output_container" onmouseover="revealVal('internal_iterations');" onmouseout="fadeVal('internal_iterations');">
-    <label for="internal_iterations" class="spaced_label"><strong># of Layout Iterations:</strong></label>
+    <label for="internal_iterations" class="spaced_label"><strong>レイアウトの反復回数:</strong></label>
     <span class="smalllabel">0</span>
     <input id="internal_iterations" class="slider_small" type="range" min="0" max="30" step="1" value="25" onfocus="revealVal('internal_iterations');" onblur="fadeVal('internal_iterations');" oninput="updateOutput('internal_iterations'); process_sankey();" onchange="process_sankey();">
     <span class="smalllabel">30</span>
     <output id="internal_iterations_val" for="internal_iterations" class="fade-init output_medium_long"></output></span>
 </div>
 <div class="form_elements2">
-<input type="checkbox" id="internal_revealshadows" value="1" onchange="process_sankey();" class="spaced_checkbox"><label for="internal_revealshadows" class="ropt">Reveal Shadow Nodes</label>
+<input type="checkbox" id="internal_revealshadows" value="1" onchange="process_sankey();" class="spaced_checkbox"><label for="internal_revealshadows" class="ropt">シャドウ・ノードを明らかにする</label>
 </div>
 
 </div>
