@@ -142,39 +142,39 @@ Budget [160] Other Necessities #0F0
 
 <h2 class="ui_head" onclick="togglePanel('node_options');">
 <span id="node_options_indicator" class="indicator">&ndash;</span>
-Nodes<span id="node_options_hint">:</span></h2>
+ノード<span id="node_options_hint">:</span></h2>
 <!-- tabindex="0" -->
 <div id="node_options" class="form_chunk">
 <p class="form_elements1">
 <span class="no_wrap output_container" onmouseover="revealVal('node_h');" onmouseout="fadeVal('node_h');">
-<label for="node_h"><strong>Height:</strong></label>
+<label for="node_h"><strong>高さ:</strong></label>
 .<input id="node_h" class="slider_small" type="range" min="0" max="100" step="1" value="50" onfocus="revealVal('node_h');" onblur="fadeVal('node_h');" oninput="updateOutput('node_h'); process_sankey();" onchange="process_sankey();">|
 <output id="node_h_val" for="node_h" class="fade-init output_wide"></output></span>
 
 <span class="no_wrap output_container" onmouseover="revealVal('node_spacing');" onmouseout="fadeVal('node_spacing');">
-<label for="node_spacing" class="spaced_label"><strong>Spacing:</strong></label>
-<span class="smalllabel">0</span><input id="node_spacing" class="slider_small" type="range" min="0" max="100" step="1" value="85" onfocus="revealVal('node_spacing');" onblur="fadeVal('node_spacing');" oninput="updateOutput('node_spacing'); process_sankey();" onchange="process_sankey();"><span class="smalllabel">Max</span>
+<label for="node_spacing" class="spaced_label"><strong>間隔:</strong></label>
+<span class="smalllabel">最小</span><input id="node_spacing" class="slider_small" type="range" min="0" max="100" step="1" value="85" onfocus="revealVal('node_spacing');" onblur="fadeVal('node_spacing');" oninput="updateOutput('node_spacing'); process_sankey();" onchange="process_sankey();"><span class="smalllabel">最大</span>
 <output id="node_spacing_val" for="node_spacing" class="fade-init output_wide"></output></span>
 </p>
 
 <p class="form_elements2">
-<span class="no_wrap"><label for="node_w"><strong>Width:</strong></label>
+<span class="no_wrap"><label for="node_w"><strong>幅:</strong></label>
 <input id="node_w" type="number" class="wholenumber number_100s" min="0" value="9" step="1" onchange="process_sankey();"></span>
 
-<span class="no_wrap"><label for="node_border" class="spaced_label"><strong>Border:</strong></label>
+<span class="no_wrap"><label for="node_border" class="spaced_label"><strong>囲み罫:</strong></label>
 <input id="node_border" type="number" class="wholenumber number_10s" min="0" value="0" step="1" onchange="process_sankey();"></span>
 
 <span class="no_wrap output_container" onmouseover="revealVal('node_opacity');" onmouseout="fadeVal('node_opacity');">
-<label for="node_opacity" class="spaced_label"><strong>Opacity:</strong></label>
+<label for="node_opacity" class="spaced_label"><strong>透明度:</strong></label>
 <span class="smalllabel">0</span><input id="node_opacity" class="slider_xxsmall" type="range" min="0" max="1" step="0.05" value="1.0" onfocus="revealVal('node_opacity');" onblur="fadeVal('node_opacity');" oninput="updateOutput('node_opacity'); process_sankey();" onchange="process_sankey();"><span class="smalllabel">1</span>
 <output id="node_opacity_val" for="node_opacity" class="fade-init output_medium"></output></span>
 </p>
 
 <fieldset class="form_elements1">
-<legend>Default Node Colors:</legend>
+<legend>ノード色（初期値）:</legend>
 <div class="fieldset_contents">
-Use <input name="node_theme" type="radio" id="node_theme_none" value="none" onchange="process_sankey();" /><label for="node_theme_none" class="ropt">one color:</label>
-<input type="color" id="node_color" title="Single Node Color" size="7" maxlength="7" value="#888888" onchange="checkRadio('node_theme_none'); process_sankey();"> or a Theme:<br />
+使用色 <input name="node_theme" type="radio" id="node_theme_none" value="none" onchange="process_sankey();" /><label for="node_theme_none" class="ropt">一色:</label>
+<input type="color" id="node_color" title="Single Node Color" size="7" maxlength="7" value="#888888" onchange="checkRadio('node_theme_none'); process_sankey();"><br />
 <table id="color_themes">
 <tr>
 <td class="text_left">
