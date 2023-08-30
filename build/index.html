@@ -117,6 +117,7 @@ Budget [160] Other Necessities #0F0
 <div class="bottom_center_self">
 <button id="save_my_work_button" type="submit" class="loadsave_button"
  onclick="saveDiagramToFile(); return false;"
+ title="Save the current diagram and settings to a local text file">保存する &#9660;</button>
 
 <p>
 <input type="file" id="load_diagram_from_file"
@@ -131,9 +132,9 @@ Budget [160] Other Necessities #0F0
 </div>
 
 <p class="form_elements3 grid_entire_row">
-<strong>Arrange the diagram:</strong><br />
-<span><input name="layout_order" id="layout_order_automatic" value="automatic" type="radio" onchange="process_sankey();" checked="checked" /><label for="layout_order_automatic" class="ropt">Automatically</label></span>
-<span><input name="layout_order" id="layout_order_exact" value="exact" type="radio" onchange="process_sankey();" class="spaced_checkbox" /><label for="layout_order_exact" class="ropt">Using the exact input order</label></span>
+<strong>ダイアグラムをアレンジ（並び順）:</strong><br />
+<span><input name="layout_order" id="layout_order_automatic" value="automatic" type="radio" onchange="process_sankey();" checked="checked" /><label for="layout_order_automatic" class="ropt">ツールにおまかせする</label></span>
+<span><input name="layout_order" id="layout_order_exact" value="exact" type="radio" onchange="process_sankey();" class="spaced_checkbox" /><label for="layout_order_exact" class="ropt">インプットの順序をそのまま使用する</label></span>
 </p>
 </div>
 
