@@ -364,35 +364,37 @@ Budget [160] Other Necessities #0F0
 
 <h2 class="ui_head" onclick="togglePanel('layout_options');" id="layout_options_section">
 <span id="layout_options_indicator" class="indicator">+</span>
-Layout Options<span id="layout_options_hint">...</span></h2>
+レイアウト・オプション<span id="layout_options_hint">...</span></h2>
 <div id="layout_options" class="form_chunk" style="display: none;">
 <div class="form_elements1 text_center">
-<small>Note: these options only apply to diagrams<br /> with 3 or more columns of nodes:</small>
-
+<small></small>注: これらのオプションは、ノードの列が 3 つ以上ある図にのみ適用されます。</small>
 <table style="width: 100%;"><tr>
 <td class="text_left">
 <input type="checkbox" id="layout_justifyorigins" value="1" onchange="process_sankey();"><br />
-<label for="layout_justifyorigins" class="ropt">Place all<br /> flow <strong>origins</strong><br /> at the <strong>left</strong> edge</label>
+<label for="layout_justifyorigins" class="ropt">すべてのフローの<strong>起点</strong>を<br /><strong></strong>左端</strong>に配置します</label>
+
 </td>
 <td class="text_right">
 <input type="checkbox" id="layout_justifyends" value="1" onchange="process_sankey();"><br />
-<label for="layout_justifyends" class="spaced_label ropt">Place all<br /> flow <strong>endpoints</strong><br /> at the <strong>right</strong> edge</label>
+<label for="layout_justifyends" class="spaced_label ropt"></label>すべてのフローの<strong>終点</strong>を<br /><strong></strong>右端</strong>に配置します</label>
+
+
 </td>
 </tr></table>
 </div>
 <p class="form_elements2 center_content">
 <input type="checkbox" id="layout_reversegraph" value="1" onchange="process_sankey();">
-<label for="layout_reversegraph" class="ropt"><strong>Reverse the graph</strong> (flow right-to-left)</label>
+<label for="layout_reversegraph" class="ropt"><strong>グラフを反転します</strong>（右から左への流れ）</label>
 </p>
 
 <p class="form_elements1 center_content">
-<strong>Diagram Scale</strong> = <span id="scale_figures"></span><br />
-For fair comparisons <em>between</em> diagrams:<br />
-1) Use the same units for each, and 2) Make their<br />
-Diagram Scales match as closely as possible.
+<strong>ダイアグラムのスケール</strong> = <span id="scale_figures"></span><br />
+ダイアグラム<em>同士</em>を公平に比較するには:<br />
+1) それぞれに同じ単位を使用し、<br />
+2) ダイアグラムのスケールを可能な限り一致させます。
 </p>
 
-<h3 class="ui_head" onclick="togglePanel('debug_options');"><span id="debug_options_indicator" class="indicator">+</span>Tools for Debugging<span id="debug_options_hint">...</span></h3>
+<h3 class="ui_head" onclick="togglePanel('debug_options');"><span id="debug_options_indicator" class="indicator">+</span>デバッグ用ツール<span id="debug_options_hint">...</span></h3>
 <div id="debug_options" class="form_chunk" style="display: none;">
 <div class="form_elements1">
   <span class="no_wrap output_container" onmouseover="revealVal('internal_iterations');" onmouseout="fadeVal('internal_iterations');">
