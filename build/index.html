@@ -85,7 +85,7 @@
 
 <div id="input_options" class="text_center grid_sidebar_right">
 <div>
-    <textarea id="flows_in" title="Diagram Inputs" rows="19" cols="40" class="font_sans" onchange="process_sankey();">// Enter Flows between Nodes, like this:
+    <textarea id="flows_in" title="Diagram Inputs" rows="19" cols="40" class="font_sans" onchange="process_sankey();">// こんな風に、ノード間のフローを記述してください:
 //         Source [AMOUNT] Target
 
 Wages [1500] Budget
@@ -97,13 +97,14 @@ Budget [400] Food
 Budget [295] Transportation
 Budget [25] Savings
 
-// You can set a Node's color, like this:
+// こんな風に、ノードの色指定が可能です:
 :Budget #708090
-//            ...or a color for a single Flow:
+
+// 特定のフローへの色指定も可能です:
 Budget [160] Other Necessities #0F0
 
-// Use the controls below to customize
-// your diagram's appearance...</textarea>
+// 以下のコントロールを使用して、
+// 図の外観をカスタマイズします...</textarea>
 </div>
 
 <div class="separated_stack">
