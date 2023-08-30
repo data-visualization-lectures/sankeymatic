@@ -277,46 +277,48 @@ Budget [160] Other Necessities #0F0
 
 <h2 class="ui_head" onclick="togglePanel('label_options');">
 <span id="label_options_indicator" class="indicator">+</span>
-Labels &amp; Units<span id="label_options_hint">...</span></h2>
+ラベル &amp; 単位<span id="label_options_hint">...</span></h2>
 
 <div id="label_options" class="form_chunk" style="display: none;">
 <p class="form_elements1">
 <span><input type="checkbox" id="labelname_appears" value="1" onchange="process_sankey();" checked="checked">
-<label for="labelname_appears" class="ropt">Show labels</label> <small class="rnote">(hide to apply your own text to the graph)</small></span>
+<label for="labelname_appears" class="ropt">データに含まれるラベルを表示</label> <small class="rnote">（独自のテキストを適用するには非表示にします）</small></span>
 <br />
 
 &nbsp;&nbsp;<span><input type="checkbox" id="labelvalue_appears" value="1" onchange="process_sankey();" checked="checked">
-<label for="labelvalue_appears" class="ropt">Show Node totals as part of labels</label></span>
+<label for="labelvalue_appears" class="ropt">ラベルの一部としてノードの合計を表示</label></span>
 <br />
 
 &nbsp;&nbsp;&nbsp;&nbsp;<span><input type="checkbox" id="labelvalue_fullprecision" value="1" onchange="process_sankey();" checked="checked">
-<label for="labelvalue_fullprecision" class="ropt">Show trailing zeroes <small>(best for currency)</small></label></span>
+<label for="labelvalue_fullprecision" class="ropt">末尾のゼロを表示<small></small>（通貨に最適）</small></label></span>
 <br />
 </p>
 
 <p class="form_elements2">
-<label for="labelname_size"><strong>Size:</strong></label>
+<label for="labelname_size"><strong>サイズ:</strong></label>
 <span class="no_wrap"><input id="labelname_size" type="number" class="wholenumber number_100s" min="6" step="1" value="16" onchange="process_sankey();"></span>
 <input type="color" id="labels_color" size="7" maxlength="7" value="#000000" onchange="process_sankey();">
 
 <span class="no_wrap output_container spaced_label" onmouseover="revealVal('labels_highlight');" onmouseout="fadeVal('labels_highlight');">
 <label for="labels_highlight" id="highlight_fld_label"><strong>Highlight:</strong></label>
-<span class="smalllabel">0</span><input id="labels_highlight" class="slider_small" type="range" min="0" max="0.9" step="0.05" value="0.55" onfocus="revealVal('labels_highlight');" onblur="fadeVal('labels_highlight');" oninput="updateOutput('labels_highlight'); process_sankey();" onchange="process_sankey();"><span class="smalllabel">Max</span>
+<label for="labels_highlight" id="highlight_fld_label"><strong>ハイライト:</strong></label>
+<span class="smalllabel">0</span><input id="labels_highlight" class="slider_small" type="range" min="0" max="0.9" step="0.05" value="0.55" onfocus="revealVal('labels_highlight');" onblur="fadeVal('labels_highlight');" oninput="updateOutput('labels_highlight'); process_sankey();" onchange="process_sankey();"><span class="smalllabel">最大</span>
 <output id="labels_highlight_val" for="labels_highlight" class="fade-init output_medium"></output></span>
 </p>
 
 <fieldset class="form_elements1">
-<legend>Position:</legend>
+<legend>配置:</legend>
 <div class="fieldset_contents">
 
 <p class="form_elements">
-Place the <strong>first</strong> labels:
-<span class="no_wrap"><input name="labelposition_first" type="radio" id="label_first_before" value="before" onchange="process_sankey();" checked="checked" /><label for="label_first_before" class="ropt">Before the node</label></span>
-<span class="no_wrap"><input name="labelposition_first" type="radio" id="label_first_after" value="after" onchange="process_sankey();" /><label for="label_first_after" class="ropt">After the node</label></span>
+<strong>最初の</strong> ラベルを:
+<span class="no_wrap"><input name="labelposition_first" type="radio" id="label_first_before" value="before" onchange="process_sankey();" checked="checked" /><label for="label_first_before" class="ropt">ノードの前に</label></span>
+<span class="no_wrap"><input name="labelposition_first" type="radio" id="label_first_after" value="after" onchange="process_sankey();" /><label for="label_first_after" class="ropt">ノードの後に</label></span>
+置く。
 </p>
 
 <p class="form_elements">
-<label for="labelposition_breakpoint">Place labels on the <strong>other side</strong> starting at:</label>
+<label for="labelposition_breakpoint">設定した位置から始まるラベルを<strong>反対側</strong>に配置する:</label>
 <span class="no_wrap output_container" onmouseover="revealVal('labelposition_breakpoint');" onmouseout="fadeVal('labelposition_breakpoint');">
 <span class="smalllabel">Stage 2</span><input id="labelposition_breakpoint" class="slider_xxsmall" type="range" min="2" max="4" step="1" value="4" onfocus="revealVal('labelposition_breakpoint');" onblur="fadeVal('labelposition_breakpoint');" oninput="updateOutput('labelposition_breakpoint'); process_sankey();" onchange="process_sankey();"><span class="smalllabel">(never)</span>
 <output id="labelposition_breakpoint_val" for="labelposition_breakpoint" class="fade-init output_10s"></output></span>
@@ -325,26 +327,26 @@ Place the <strong>first</strong> labels:
 </fieldset>
 
 <p class="form_elements2">
-<strong>Face:</strong>
-<span class="no_wrap"><input name="labels_fontface" type="radio" id="sans_serif" value="sans-serif" checked="checked" onchange="process_sankey();" /><label for="sans_serif" class="ropt font_sans">sans</label></span>
-<span class="no_wrap"><input name="labels_fontface" type="radio" id="serif" value="serif" onchange="process_sankey();" /><label for="serif" class="ropt font_serif">serif</label></span>
-<span class="no_wrap"><input name="labels_fontface" type="radio" id="monospace" value="monospace" onchange="process_sankey();" /><label for="monospace" class="ropt font_mono">mono</label></span>
+<strong>書体:</strong>
+<span class="no_wrap"><input name="labels_fontface" type="radio" id="sans_serif" value="sans-serif" checked="checked" onchange="process_sankey();" /><label for="sans_serif" class="ropt font_sans">サンセリフ</label></span>
+<span class="no_wrap"><input name="labels_fontface" type="radio" id="serif" value="serif" onchange="process_sankey();" /><label for="serif" class="ropt font_serif">セリフ</label></span>
+<span class="no_wrap"><input name="labels_fontface" type="radio" id="monospace" value="monospace" onchange="process_sankey();" /><label for="monospace" class="ropt font_mono">モノ</label></span>
 
 &nbsp;
 
 <span class="no_wrap output_container" onmouseover="revealVal('labelname_weight');" onmouseout="fadeVal('labelname_weight');">
-<label for="labelname_weight"><strong>Style:</strong></label>
-<span class="smalllabel font_light">Light</span><input id="labelname_weight" class="slider_xxsmall" type="range" min="100" max="700" step="300" value="400" onfocus="revealVal('labelname_weight');" onblur="fadeVal('labelname_weight');" oninput="updateOutput('labelname_weight'); process_sankey();" onchange="process_sankey();"><span class="smalllabel font_bolder">Bold</span>
+<label for="labelname_weight"><strong>スタイル:</strong></label>
+<span class="smalllabel font_light">細字</span><input id="labelname_weight" class="slider_xxsmall" type="range" min="100" max="700" step="300" value="400" onfocus="revealVal('labelname_weight');" onblur="fadeVal('labelname_weight');" oninput="updateOutput('labelname_weight'); process_sankey();" onchange="process_sankey();"><span class="smalllabel font_bolder">太字</span>
 <output id="labelname_weight_val" for="labelname_weight" class="fade-init output_medium"></output></span>
 </p>
 
 <fieldset class="form_elements1">
-<legend>Units:</legend>
+<legend>単位:</legend>
 <div class="fieldset_contents">
-<span class="no_wrap"><label for="value_prefix">Prefix =</label> <input type="text" id="value_prefix" size="3" maxlength="10" onchange="process_sankey();"></span>
-<span class="no_wrap"><label for="value_suffix">Suffix =</label> <input type="text" id="value_suffix" size="5" maxlength="10" onchange="process_sankey();"></span>
+<span class="no_wrap"><label for="value_prefix">接頭語 =</label> <input type="text" id="value_prefix" size="3" maxlength="10" onchange="process_sankey();"></span>
+<span class="no_wrap"><label for="value_suffix">接尾語 =</label> <input type="text" id="value_suffix" size="5" maxlength="10" onchange="process_sankey();"></span>
 <br />
-<label for="value_format"><strong>Number Format:</strong></label>
+<label for="value_format"><strong>数字のフォーマット:</strong></label>
 <select id="value_format" onchange="process_sankey();">
 <option value=",." selected="selected">1,000,000.00</option>
 <option value=".,">1.000.000,00</option>
