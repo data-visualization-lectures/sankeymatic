@@ -2109,8 +2109,9 @@ glob.process_sankey = (fileName = null) => {
 
   // Reflect summary stats to the user:
   let totalsMsg
-    = `<strong>${approvedFlows.length} Flows</strong> between `
-    + `<strong>${approvedNodes.length} Nodes</strong>. `;
+  = `<strong>${approvedNodes.length} ノード</strong> 間に `
+  + `<strong>${approvedFlows.length} フロー</strong>  `;
+
 
   // Do the totals match? If not, mention the different totals:
   if (Math.abs(grandTotal[IN] - grandTotal[OUT]) > epsilonDifference) {
@@ -2119,7 +2120,7 @@ glob.process_sankey = (fileName = null) => {
       += `Total Inputs: <strong>${withUnits(grandTotal[IN])}</strong> ${gtLt}`
       + ` Total Outputs: <strong>${withUnits(grandTotal[OUT])}</strong>`;
   } else {
-    totalsMsg += 'Total Inputs = Total Outputs = '
+    totalsMsg += 'トータル・インプット = トータル・アウトプット = '
       + `<strong>${withUnits(grandTotal[IN])}</strong> &#9989;`;
   }
   msg.add(totalsMsg, 'total');
