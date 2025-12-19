@@ -2393,6 +2393,64 @@ ${sourceURLLine}
     }
   });
 
+  // --- Auto-load from query param (Cloud Launch) ---
+  window.addEventListener('load', () => {
+    const params = new URLSearchParams(window.location.search);
+    const projectId = params.get('project_id');
+    if (projectId) {
+      console.log("Found project_id:", projectId);
+      let attempts = 0;
+      const initCheck = setInterval(async () => {
+        attempts++;
+        if (attempts > 50) { // Timeout after 25s
+          clearInterval(initCheck);
+          console.error("Timeout waiting for CloudApi/Supabase");
+          return;
+        }
+
+        if (window.CloudApi && window.supabase) {
+          clearInterval(initCheck);
+          // Wait for session to be established
+          const { data: { session } } = await window.supabase.auth.getSession();
+          if (session) {
+            const loadingIndicator = document.createElement('div');
+            loadingIndicator.textContent = "Loading Project...";
+            loadingIndicator.style.cssText = "position:fixed;top:10px;right:10px;background:#036;color:#fff;padding:15px;border-radius:5px;z-index:9999;box-shadow:0 2px 10px rgba(0,0,0,0.3);";
+            document.body.appendChild(loadingIndicator);
+
+            try {
+              const data = await window.CloudApi.loadProject(projectId);
+              console.log("Project loaded:", data);
+
+              // Unwrapping logic
+              let actualData = data;
+              if (actualData.data && (!actualData.flows && !actualData.settings)) {
+                actualData = actualData.data;
+              }
+              if (typeof actualData === 'string' && actualData.trim().startsWith('{')) {
+                try { actualData = JSON.parse(actualData); } catch (e) { }
+              }
+
+              glob.loadProjectData(actualData);
+
+              // Clean URL
+              const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+              window.history.replaceState({ path: newUrl }, '', newUrl);
+
+            } catch (e) {
+              console.error("Auto-load failed", e);
+              alert("プロジェクトの読み込みに失敗しました: " + e.message);
+            } finally {
+              loadingIndicator.remove();
+            }
+          } else {
+            console.warn("No session found for auto-load");
+          }
+        }
+      }, 500);
+    }
+  });
+
 }(window === 'undefined' ? global : window));
 
 // Make the linter happy about imported objects:

@@ -367,4 +367,6 @@
             }
         }
     };
+    // Expose CloudApi for auto-loading from sankeymatic.js
+    window.CloudApi = CloudApi;
 })();
