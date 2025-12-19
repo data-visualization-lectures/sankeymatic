@@ -274,8 +274,9 @@ span.toggleable:hover {
   background-color: var(--bg-light);
   color: var(--deep-blue);
   border: var(--border-base);
-  margin-top: 0.3em;
-  width: fit-content;
+  margin: 0.3em auto 0;
+  width: 600px;
+  box-sizing: border-box;
 }
 
 .differencemessage {
@@ -382,6 +383,7 @@ td#other_entry {
 td#grapharea {
   padding: 0;
   margin: 0;
+  text-align: center;
 }
 
 th#title {
@@ -511,8 +513,20 @@ button#save_as_svg:hover {
 }
 
 #reset_moves_area {
-  margin-left: 0.1em;
-  margin-bottom: 0;
+  margin: 0.4em auto;
+  width: 600px;
+  text-align: center;
+}
+
+#top_messages_container {
+  margin: 0.4em auto;
+  width: 600px;
+  text-align: center;
+}
+
+#messages {
+  margin: 0.4em auto;
+  width: 600px;
 }
 
 .callout_container {
