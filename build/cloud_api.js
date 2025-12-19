@@ -18,10 +18,15 @@
             }
 
             const headers = {
-                "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
                 ...options.headers,
             };
+
+            // If body is NOT FormData, set JSON content type. 
+            // Browser sets Content-Type (with boundary) automatically for FormData.
+            if (!(options.body instanceof FormData)) {
+                headers["Content-Type"] = "application/json";
+            }
 
             const response = await fetch(`${API_BASE}${endpoint}`, {
                 ...options,
@@ -37,7 +42,6 @@
         }
 
         static async listProjects() {
-            // API仕様に合わせてクエリパラメータを設定
             return this.request(`/api/projects?app=${APP_ID}`);
         }
 
@@ -45,14 +49,18 @@
             return this.request(`/api/projects/${id}`);
         }
 
-        static async saveProject(name, data) {
+        static async saveProject(name, data, thumbnailBlob) {
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('app_name', APP_ID);
+            formData.append('data', JSON.stringify(data));
+            if (thumbnailBlob) {
+                formData.append('thumbnail', thumbnailBlob, 'thumbnail.png');
+            }
+
             return this.request("/api/projects", {
                 method: "POST",
-                body: JSON.stringify({
-                    name,
-                    app_name: APP_ID,
-                    data,
-                }),
+                body: formData,
             });
         }
 
@@ -66,9 +74,9 @@
     // Global UI handling for Cloud Operations
     window.CloudUI = {
         // --- SAVE UI ---
-        openSaveModal: (currentData) => {
-            // データ収集ロジックは呼び出し元からデータを受け取る形にする
+        openSaveModal: (currentData, thumbnailBlob) => {
             window.CloudUI.pendingSaveData = currentData;
+            window.CloudUI.pendingThumbnail = thumbnailBlob;
 
             let modal = document.getElementById('cloud-save-modal');
             if (!modal) {
@@ -80,6 +88,12 @@
           <h3>クラウドに保存</h3>
           <p>プロジェクト名を入力してください:</p>
           <input type="text" id="cloud-project-name" required placeholder="Project Name" style="width: 100%; padding: 5px; margin-bottom: 10px;">
+          
+          <div id="cloud-save-preview" style="margin-bottom: 15px; text-align: center; display: none;">
+            <p style="margin:0 0 5px 0; font-size:0.9em; color:#666;">サムネイルプレビュー</p>
+            <img id="cloud-save-thumb-preview" style="max-width: 100%; max-height: 150px; border: 1px solid #ccc; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          </div>
+
           <div style="text-align: right;">
             <button type="button" onclick="document.getElementById('cloud-save-modal').close()">キャンセル</button>
             <button type="button" id="cloud-save-confirm-btn" style="background: #036; color: white;">保存</button>
@@ -102,7 +116,8 @@
                     btn.textContent = "保存中...";
 
                     try {
-                        await CloudApi.saveProject(name, window.CloudUI.pendingSaveData);
+                        // Pass thumbnail if available
+                        await CloudApi.saveProject(name, window.CloudUI.pendingSaveData, window.CloudUI.pendingThumbnail);
                         alert("保存しました。");
                         modal.close();
                     } catch (e) {
@@ -112,6 +127,17 @@
                         btn.textContent = originalText;
                     }
                 };
+            }
+
+            // Setup Preview
+            const previewDiv = modal.querySelector('#cloud-save-preview');
+            const previewImg = modal.querySelector('#cloud-save-thumb-preview');
+            if (thumbnailBlob) {
+                const url = URL.createObjectURL(thumbnailBlob);
+                previewImg.src = url;
+                previewDiv.style.display = 'block';
+            } else {
+                previewDiv.style.display = 'none';
             }
 
             // Reset input
@@ -128,13 +154,15 @@
                 modal = document.createElement('dialog');
                 modal.id = 'cloud-load-modal';
                 modal.className = 'cloud-modal';
+                modal.style.maxWidth = "800px"; // Wider for grid
+                modal.style.width = "90%";
                 // Basic structure, content populated dynamically
                 modal.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 10px;">
             <h3 style="margin: 0;">プロジェクトを開く</h3>
             <button type="button" onclick="document.getElementById('cloud-load-modal').close()">閉じる</button>
         </div>
-        <div id="cloud-project-list" style="max-height: 300px; overflow-y: auto;">
+        <div id="cloud-project-list" style="max-height: 500px; overflow-y: auto;">
           <p>読み込み中...</p>
         </div>
       `;
@@ -152,37 +180,88 @@
                     return;
                 }
 
-                let html = '<table style="width: 100%; border-collapse: collapse;">';
-                html += '<tr style="background: #eee; text-align: left;"><th>プロジェクト名</th><th>更新日時</th><th>操作</th></tr>';
+                // Render Grid Layout
+                let html = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">';
 
                 projects.forEach(p => {
                     const dateStr = new Date(p.updated_at).toLocaleString();
                     html += `
-          <tr style="border-bottom: 1px solid #eee;">
-            <td style="padding: 8px;">${p.name}</td>
-            <td style="padding: 8px;">${dateStr}</td>
-            <td style="padding: 8px; text-align: right;">
-              <button class="load-btn" data-id="${p.id}" style="margin-right: 5px;">開く</button>
-              <button class="delete-btn" data-id="${p.id}" style="color: red;">削除</button>
-            </td>
-          </tr>
+          <div class="project-card" style="border: 1px solid #ccc; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; background: #fff;">
+            <div style="position: relative; width: 100%; padding-top: 56.25%; /* 16:9 Aspect Ratio */ background: #f0f0f0;">
+                <div style="position: absolute; top:0; left:0; right:0; bottom:0; display: flex; align-items: center; justify-content: center;">
+                    <img id="thumb-${p.id}" style="max-width: 100%; max-height: 100%; display: none; object-fit: contain;" alt="${p.name}">
+                    <span id="loading-${p.id}" style="color: #999; font-size: 0.8em;">Loading...</span>
+                </div>
+            </div>
+            <div style="padding: 10px; flex-grow: 1; display: flex; flex-direction: column;">
+                <div style="font-weight: bold; margin-bottom: 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${p.name}">${p.name}</div>
+                <div style="font-size: 0.8em; color: #666; margin-bottom: 10px;">${dateStr}</div>
+                <div style="margin-top: auto; display: flex; justify-content: space-between;">
+                    <button class="load-btn" data-id="${p.id}" style="flex: 1; margin-right: 5px;">開く</button>
+                    <button class="delete-btn" data-id="${p.id}" style="color: red; padding: 5px 10px;">削除</button>
+                </div>
+            </div>
+          </div>
         `;
                 });
-                html += '</table>';
+                html += '</div>';
                 listContainer.innerHTML = html;
+
+                // Start fetching thumbnails
+                projects.forEach(async (p) => {
+                    if (!p.thumbnail_path) {
+                        const loadingEl = document.getElementById(`loading-${p.id}`);
+                        if (loadingEl) loadingEl.textContent = 'No Image';
+                        return;
+                    }
+
+                    try {
+                        // Using Supabase client directly to download from Storage
+                        if (window.supabase) {
+                            const { data, error } = await window.supabase.storage
+                                .from('user_projects')
+                                .download(p.thumbnail_path);
+
+                            if (error) throw error;
+
+                            const url = URL.createObjectURL(data);
+                            const imgEl = document.getElementById(`thumb-${p.id}`);
+                            const loadingEl = document.getElementById(`loading-${p.id}`);
+
+                            if (imgEl && loadingEl) {
+                                imgEl.src = url;
+                                imgEl.style.display = 'block';
+                                loadingEl.style.display = 'none';
+                            }
+                        }
+                    } catch (err) {
+                        console.warn(`Failed to load thumbnail for ${p.id}`, err);
+                        const loadingEl = document.getElementById(`loading-${p.id}`);
+                        if (loadingEl) loadingEl.textContent = 'Error';
+                    }
+                });
 
                 // Event delegation
                 listContainer.onclick = async (e) => {
                     if (e.target.classList.contains('load-btn')) {
                         const id = e.target.dataset.id;
-                        e.target.disabled = true;
-                        e.target.textContent = "取得中...";
+                        const btn = e.target;
+                        const originalText = btn.textContent;
+                        btn.disabled = true;
+                        btn.textContent = "取得中...";
                         try {
                             const projectData = await CloudApi.loadProject(id);
+                            // Handle potentially wrapped data
                             let actualData = projectData;
-                            // Unwrapping logic if needed
-                            if (projectData.data && !projectData.flows) {
+                            // The API response depends on how backend handles `data` field in DB + Storage.
+                            // Assuming `projectData` is the JSON content of the file or the record.
+                            if (projectData.data && !projectData.flows && !projectData.settings) {
+                                // Wrapped in 'data' key?
                                 actualData = projectData.data;
+                            }
+                            // Double parsing if it was double stringified
+                            if (typeof actualData === 'string' && actualData.trim().startsWith('{')) {
+                                try { actualData = JSON.parse(actualData); } catch (e) { }
                             }
 
                             modal.close();
@@ -190,8 +269,8 @@
 
                         } catch (err) {
                             alert("読み込みエラー: " + err.message);
-                            e.target.disabled = false;
-                            e.target.textContent = "開く";
+                            btn.disabled = false;
+                            btn.textContent = originalText;
                         }
                     } else if (e.target.classList.contains('delete-btn')) {
                         if (!confirm("本当に削除しますか？")) return;
