@@ -42,11 +42,12 @@ header nav {
   list-style-type: none;
   padding: 0.1em 0.5em;
   margin: 0;
+  justify-content: space-between;
 }
 
 .main_nav_items ul li {
   text-align: center;
-  padding-right: 2.5em;
+  padding-right: 0;
 }
 
 .main_nav_items li a {

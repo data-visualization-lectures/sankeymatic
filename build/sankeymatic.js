@@ -2252,6 +2252,61 @@ ${sourceURLLine}
     el(userInputsField).value = uploadedText;
     glob.process_sankey(userFileName);
   };
+
+  // Listen for events from the Common Header (dataviz-auth-client.js)
+  window.addEventListener('dataviz-save-trigger', () => {
+    glob.saveDiagramAsJSON();
+  });
+
+  window.addEventListener('dataviz-load-trigger', async (e) => {
+    if (e.detail && e.detail.file) {
+      const file = e.detail.file;
+      const uploadedText = await file.text();
+      // Reuse the logic from loadDiagramFile, or just call specific logic?
+      // Since loadDiagramFile reads from the DOM input, let's extract the core logic or just patch it here.
+      // Re-implementing the core logic here to handle the passed file content directly:
+
+      // Simple check for JSON format:
+      if (uploadedText.trim().startsWith('{')) {
+        try {
+          const jsonData = JSON.parse(uploadedText);
+
+          if (typeof jsonData.flows === 'string') {
+            el(userInputsField).value = jsonData.flows;
+          }
+
+          if (jsonData.settings && typeof jsonData.settings === 'object') {
+            Object.entries(jsonData.settings).forEach(([fld, val]) => {
+              const fldData = skmSettings.get(fld);
+              if (fldData) {
+                const [isValid, finalVal] = settingIsValid(fldData, val, {});
+                if (isValid) {
+                  setValueOnPage(fld, fldData[0], finalVal);
+                }
+              }
+            });
+          }
+
+          if (jsonData.moves && typeof jsonData.moves === 'object') {
+            glob.rememberedMoves.clear();
+            Object.entries(jsonData.moves).forEach(([nodeName, move]) => {
+              glob.rememberedMoves.set(nodeName, move);
+            });
+          }
+
+          glob.process_sankey(file.name);
+          return;
+        } catch (err) {
+          console.warn('JSON parse error from header load:', err);
+        }
+      }
+
+      // Fallback for text files
+      el(userInputsField).value = uploadedText;
+      glob.process_sankey(file.name);
+    }
+  });
+
 }(window === 'undefined' ? global : window));
 
 // Make the linter happy about imported objects:
