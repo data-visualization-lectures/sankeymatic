@@ -2264,7 +2264,7 @@ ${sourceURLLine}
     });
 
     // 2. Gather Flows
-    const flows = removeAutoLines(elV(userInputsField).split('\n')).join('\n');
+    const flows = removeAutoLines(elV(userInputsField).split('\n'));
 
     // 3. Gather Moves
     const moves = {};
