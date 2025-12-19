@@ -3,17 +3,7 @@
 
 // skmSettings = Settings required to render a diagram.
 // Format = field_name: [data type, initial value, allowed values]
-// 'Allowed values' contains different things per data type:
-//   whole = [min, [max]]
-//   contained = [min, dimension to compare to (either 'h' or 'w')]
-//   breakpoint = [min]
-//   text = [min-length, max-length]
-//   radio & list = [literal list of allowed values]
-// These types' constraints are NOT specified here; they are enforced in code:
-//   decimal = always 0.0 - 1.0
-//   color = always a hex color spec
-//   yn = always y or n
-const skmSettings
+window.skmSettings
   = new Map([
     ['size_w', ['whole', 600, [40]]],
     ['size_h', ['whole', 600, [40]]],
@@ -61,128 +51,107 @@ const skmSettings
     // 'internal' settings are never exported, but can be imported:
     ['internal_iterations', ['whole', 25, [0, 50]]],
     ['internal_revealshadows', ['yn', 'n', []]],
-  ]),
+  ]);
 
-  // Some reusable regular expressions to be precompiled:
-  reWholeNumber = /^\d+$/,
-  reDecimal = /^\d(?:.\d+)?$/,
-  reCommentLine = /^(?:'|\/\/)/, // Line starts with // or '
-  reYesNo = /^(?:y|yes|n|no)/i, // = Y/y/Yes/YES/etc. or N/n/No/NO/etc.
-  reYes = /^(?:y|yes)/i,        // = Y/y/Yes/YES/etc.
+// Some reusable regular expressions to be precompiled:
+window.reWholeNumber = /^\d+$/;
+window.reDecimal = /^\d(?:.\d+)?$/;
+window.reCommentLine = /^(?:'|\/\/)/; // Line starts with // or '
+window.reYesNo = /^(?:y|yes|n|no)/i; // = Y/y/Yes/YES/etc. or N/n/No/NO/etc.
+window.reYes = /^(?:y|yes)/i;        // = Y/y/Yes/YES/etc.
 
-  // Settings Notes:
-  //   * We look for settings & move lines FIRST.
-  //   * If they prove valid, we apply them to the UI and convert them to
-  //     COMMENTS in the input (with a checkmark to indicate success).
-  //   * The idea here is to avoid having input text conflicting with
-  //     the UI controls. Since any valid setting line is immediately
-  //     applied and disappears, we can't have a conflict.
-  //
-  // reSettingsValue:
-  // One to two words, followed by a value made up of letters,
-  // numbers, decimals and/or dashes.
-  // ex. "node theme a", "flow inheritfrom outside-in"
-  reSettingsValue = /^((?:\w+\s*){1,2}) (#?[\w.-]+)$/,
+// Settings Notes:
+//   * We look for settings & move lines FIRST.
+//   * If they prove valid, we apply them to the UI and convert them to
+//     COMMENTS in the input (with a checkmark to indicate success).
+//   * The idea here is to avoid having input text conflicting with
+//     the UI controls. Since any valid setting line is immediately
+//     applied and disappears, we can't have a conflict.
+//
+// reSettingsValue:
+// One to two words, followed by a value made up of letters,
+// numbers, decimals and/or dashes.
+// ex. "node theme a", "flow inheritfrom outside-in"
+window.reSettingsValue = /^((?:\w+\s*){1,2}) (#?[\w.-]+)$/;
 
-  // reSettingsText:
-  // One to two words followed by a quoted string (possibly empty):
-  // ex: "value prefix ''", "suffix 'M'"
-  // If the raw string contains a single quote, it will be doubled here.
-  reSettingsText = /^((?:\w+\s*){1,2}) '(.*)'$/,
-  reMoveLine = /^move (.+) (-?\d(?:.\d+)?), (-?\d(?:.\d+)?)$/,
+// reSettingsText:
+// One to two words followed by a quoted string (possibly empty):
+// ex: "value prefix ''", "suffix 'M'"
+// If the raw string contains a single quote, it will be doubled here.
+window.reSettingsText = /^((?:\w+\s*){1,2}) '(.*)'$/;
+window.reMoveLine = /^move (.+) (-?\d(?:.\d+)?), (-?\d(?:.\d+)?)$/;
 
-  sourceHeaderPrefix = '// SankeyMATIC diagram inputs -',
-  sourceURLLine = '// https://sankeymatic.com/build/',
-  userDataMarker = '// === Nodes and Flows ===',
-  movesMarker = '// === Moved Nodes ===',
-  settingsMarker = '// === Settings ===',
-  settingsAppliedPrefix = '// \u2713 ', // u2713 = a little check mark
+window.sourceHeaderPrefix = '// SankeyMATIC diagram inputs -';
+window.sourceURLLine = '// https://sankeymatic.com/build/';
+window.userDataMarker = '// === Nodes and Flows ===';
+window.movesMarker = '// === Moved Nodes ===';
+window.settingsMarker = '// === Settings ===';
+window.settingsAppliedPrefix = '// \u2713 '; // u2713 = a little check mark
 
-  reNodeLine = /^:(.+) #([a-f0-9]{0,6})?(\.\d{1,4})?\s*(>>|<<)*\s*(>>|<<)*$/i,
-  reFlowLine = /^(.+)\[([\d\s.+-]+)\](.+)$/,
-  reFlowTargetWithSuffix = /^(.+)\s+(#\S+)$/,
+window.reNodeLine = /^:(.+) #([a-f0-9]{0,6})?(\.\d{1,4})?\s*(>>|<<)*\s*(>>|<<)*$/i;
+window.reFlowLine = /^(.+)\[([\d\s.+-]+)\](.+)$/;
+window.reFlowTargetWithSuffix = /^(.+)\s+(#\S+)$/;
 
-  reColorPlusOpacity = /^#([a-f0-9]{3,6})?(\.\d{1,4})?$/i,
-  reBareColor = /^(?:[a-f0-9]{3}|[a-f0-9]{6})$/i,
-  reRGBColor = /^#(?:[a-f0-9]{3}|[a-f0-9]{6})$/i,
-  colorGray60 = '#999',
+window.reColorPlusOpacity = /^#([a-f0-9]{3,6})?(\.\d{1,4})?$/i;
+window.reBareColor = /^(?:[a-f0-9]{3}|[a-f0-9]{6})$/i;
+window.reRGBColor = /^#(?:[a-f0-9]{3}|[a-f0-9]{6})$/i;
+window.colorGray60 = '#999';
 
-  userInputsField = 'flows_in',
+window.userInputsField = 'flows_in';
 
-  // Some prime constants for enum values:
-  [IN, OUT, BEFORE, AFTER] = [13, 17, 19, 23],
+// Some prime constants for enum values:
+window.IN = 13;
+window.OUT = 17;
+window.BEFORE = 19;
+window.AFTER = 23;
 
-  // fontMetrics = measurements relating to labels & their highlights
-  //   Structure:
-  //     browserKey ('firefox' or '*')
-  //       -> font-face or '*'
-  //         -> values
-  //   Value list:
-  //     - dy: what fraction of the BoundingBox to lower labels to make them
-  //       vertically-centered relative to their Node
-  //     - top, bot: how many x-heights to pad above/below the BoundingBox
-  //     - inner: how many em-widths to pad between the label and the
-  //       highlight's edge (could be on the left or right)
-  //     - outer: how many em-widths to pad at the end furthest from the Node
-  //     - marginRight: what multiple of 'inner' to move labels to the right
-  //     - marginAdjLeft: offset to add to marginRight when moving labels
-  //       to left
-  fontMetrics
+// fontMetrics = measurements relating to labels & their highlights
+window.fontMetrics
   = {
-    firefox: {
-      'sans-serif': {
-        dy: 0.35, top: 0.55, bot: 0.25, inner: 0.35, outer: 0.35,
-        marginRight: 1.4, marginAdjLeft: 0,
-        },
-      monospace: {
-        dy: 0.31, top: 0.3, bot: 0.25, inner: 0.35, outer: 0.35,
-        marginRight: 1.48, marginAdjLeft: -0.08,
-        },
-      '*': {
-        dy: 0.31, top: 0.3, bot: 0.25, inner: 0.35, outer: 0.35,
-        marginRight: 1.35, marginAdjLeft: -0.05,
-        },
+  firefox: {
+    'sans-serif': {
+      dy: 0.35, top: 0.55, bot: 0.25, inner: 0.35, outer: 0.35,
+      marginRight: 1.4, marginAdjLeft: 0,
+    },
+    monospace: {
+      dy: 0.31, top: 0.3, bot: 0.25, inner: 0.35, outer: 0.35,
+      marginRight: 1.48, marginAdjLeft: -0.08,
     },
     '*': {
-      monospace: {
-        dy: 0.28, top: 0.3, bot: 0.3, inner: 0.35, outer: 0.38,
-        marginRight: 1.45, marginAdjLeft: 0,
-        },
-      '*': {
-        dy: 0.29, top: 0.3, bot: 0.3, inner: 0.35, outer: 0.38,
-        marginRight: 1.35, marginAdjLeft: 0,
-        },
+      dy: 0.31, top: 0.3, bot: 0.25, inner: 0.35, outer: 0.35,
+      marginRight: 1.35, marginAdjLeft: -0.05,
     },
   },
+  '*': {
+    monospace: {
+      dy: 0.28, top: 0.3, bot: 0.3, inner: 0.35, outer: 0.38,
+      marginRight: 1.45, marginAdjLeft: 0,
+    },
+    '*': {
+      dy: 0.29, top: 0.3, bot: 0.3, inner: 0.35, outer: 0.38,
+      marginRight: 1.35, marginAdjLeft: 0,
+    },
+  },
+};
 
-  // highlightStyles = settings relating to label highlight appearance
-  //   Structure:
-  //     mode ('dark' or 'light')
-  //       -> state ('orig' or 'hover')
-  //         -> values (directly applied as SVG attributes)
-  highlightStyles
+// highlightStyles = settings relating to label highlight appearance
+window.highlightStyles
   = {
-    // When text is dark-on-light:
-    dark: {
-      orig: { fill: '#fff', stroke: 'none', stroke_width: 0, stroke_opacity: 0 },
-      hover: { fill: '#ffb', stroke: '#440', stroke_width: 1, stroke_opacity: 0.7 },
-    },
-    // When text is light-on-dark:
-    light: {
-      orig: { fill: '#000', stroke: 'none', stroke_width: 0, stroke_opacity: 0 },
-      hover: { fill: '#603', stroke: '#fff', stroke_width: 1.7, stroke_opacity: 0.9 },
-    },
+  // When text is dark-on-light:
+  dark: {
+    orig: { fill: '#fff', stroke: 'none', stroke_width: 0, stroke_opacity: 0 },
+    hover: { fill: '#ffb', stroke: '#440', stroke_width: 1, stroke_opacity: 0.7 },
   },
+  // When text is light-on-dark:
+  light: {
+    orig: { fill: '#000', stroke: 'none', stroke_width: 0, stroke_opacity: 0 },
+    hover: { fill: '#603', stroke: '#fff', stroke_width: 1.7, stroke_opacity: 0.9 },
+  },
+};
 
-  // sampleDiagramRecipes = preset diagrams of various types.
-  //
-  // Planning to make these more elaborate / sophisticated as the tool's
-  // capabilities improve...
-  //
-  // These contain some super-long string literals; I preferred that to
-  // making this a very /tall/ file with a difficult-to-follow structure.
-  sampleDiagramRecipes
-    = new Map([
+// sampleDiagramRecipes = preset diagrams of various types.
+window.sampleDiagramRecipes
+  = new Map([
     // The initial diagram loaded on the page:
     ['default_budget', {
       name: 'Basic Budget',
@@ -198,7 +167,7 @@ const skmSettings
         layout_order: 'automatic',
         labelname_size: 16,
         value_prefix: '',
-        },
+      },
     }],
 
     // Ranked-choice election:
@@ -216,7 +185,7 @@ const skmSettings
         layout_order: 'exact',
         labelname_size: 14,
         value_prefix: '',
-        },
+      },
     }],
 
     // Sample job-hunt flow:
@@ -234,7 +203,7 @@ const skmSettings
         layout_order: 'automatic',
         labelname_size: 14,
         value_prefix: '',
-        },
+      },
     }],
 
     // Sample quarterly financial results:
@@ -252,7 +221,7 @@ const skmSettings
         layout_order: 'automatic',
         labelname_size: 13,
         value_prefix: '$',
-        },
+      },
     }],
 
     // The most basic diagram:
@@ -270,16 +239,6 @@ const skmSettings
         layout_order: 'automatic',
         labelname_size: 15,
         value_prefix: '',
-        },
+      },
     }],
-
-    // A variation of the inputs for the original d3 energy diagram, now found
-    // at https://observablehq.com/@d3/sankey:
-    // (This will become another button at some point.)
-    // ['energy_flows_all', {
-    //   name: 'Energy Flows',
-    // eslint-disable-next-line max-len
-    //   flows: ":Losses #900 <<\n:Coal #444 <<\nAgricultural 'waste' [124.729] Bio-conversion\nBio-conversion [0.597] Liquid\nBio-conversion [26.862] Losses\nBio-conversion [280.322] Solid\nBio-conversion [81.144] Gas\nBiofuel imports [35] Liquid\nBiomass imports [35] Solid\nCoal imports [11.606] Coal\nCoal reserves [63.965] Coal\nCoal [75.571] Solid\nDistrict heating [10.639] Industry\nDistrict heating [22.505] Heating and cooling - commercial\nDistrict heating [46.184] Heating and cooling - homes\nElectricity grid [104.453] Over generation / exports\nElectricity grid [113.726] Heating and cooling - homes\nElectricity grid [27.14] H2 conversion\nElectricity grid [342.165] Industry\nElectricity grid [37.797] Road transport\nElectricity grid [4.412] Agriculture\nElectricity grid [40.858] Heating and cooling - commercial\nElectricity grid [56.691] Losses\nElectricity grid [7.863] Rail transport\nElectricity grid [90.008] Lighting & appliances - commercial\nElectricity grid [93.494] Lighting & appliances - homes\nGas imports [40.719] Ngas\nGas reserves [82.233] Ngas\nGas [0.129] Heating and cooling - commercial\nGas [1.401] Losses\nGas [151.891] Thermal generation\nGas [2.096] Agriculture\nGas [48.58] Industry\nGeothermal [7.013] Electricity grid\nH2 conversion [20.897] H2\nH2 conversion [6.242] Losses\nH2 [20.897] Road transport\nHydro [6.995] Electricity grid\nLiquid [121.066] Industry\nLiquid [128.69] International shipping\nLiquid [135.835] Road transport\nLiquid [14.458] Domestic aviation\nLiquid [206.267] International aviation\nLiquid [3.64] Agriculture\nLiquid [33.218] National navigation\nLiquid [4.413] Rail transport\nMarine algae [4.375] Bio-conversion\nNgas [122.952] Gas\nNuclear [839.978] Thermal generation\nOil imports [504.287] Oil\nOil reserves [107.703] Oil\nOil [611.99] Liquid\nOther waste [56.587] Solid\nOther waste [77.81] Bio-conversion\nPumped heat [193.026] Heating and cooling - homes\nPumped heat [70.672] Heating and cooling - commercial\nSolar PV [59.901] Electricity grid\nSolar Thermal [19.263] Heating and cooling - homes\nSolar [19.263] Solar Thermal\nSolar [59.901] Solar PV\nSolid [0.882] Agriculture\nSolid [400.12] Thermal generation\nSolid [46.477] Industry\nThermal generation [525.531] Electricity grid\nThermal generation [787.129] Losses\nThermal generation [79.329] District heating\nTidal [9.452] Electricity grid\nUK land based bioenergy [182.01] Bio-conversion\nWave [19.013] Electricity grid\nWind [289.366] Electricity grid",
-    //   settings: {},
-    // }],
   ]);

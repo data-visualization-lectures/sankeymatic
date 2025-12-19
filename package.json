@@ -1,0 +1,27 @@
+{
+  "name": "sankeymatic",
+  "version": "1.0.0",
+  "description": "* Describe your data using text. * Customize your diagram's appearance interactively. * Export a finished product as a PNG image and as SVG code. * Export/import your work in progress as readable (and diff-able) plain text files.",
+  "main": "sankeymatic.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/data-visualization-lectures/sankeymatic.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/data-visualization-lectures/sankeymatic/issues"
+  },
+  "homepage": "https://github.com/data-visualization-lectures/sankeymatic#readme",
+  "devDependencies": {
+    "vite": "^7.3.0"
+  }
+}

@@ -5,29 +5,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="initial-scale=1">
   <title>SankeyMATIC: Build a Sankey Diagram</title>
-  <link rel="stylesheet" href="build.css">
-  <link rel="stylesheet" href="main.css">
-  <link rel="stylesheet" href="nav.css">
+
   <script defer src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/canvg@3/lib/umd.js" crossorigin="anonymous"></script>
-  <script defer src="constants.js"></script>
-  <script>
-    /* Rescue project_id before dataviz-auth-client.js clears it */
-    (function () {
-      if (window.location.search) {
-        const p = new URLSearchParams(window.location.search).get('project_id');
-        if (p) {
-          window.SKM_PROJECT_ID = p;
-          console.log('Rescued project_id:', p);
-        }
-      }
-    })();
-  </script>
-  <script defer src="supabase.js"></script>
-  <script defer src="dataviz-auth-client.js"></script>
-  <script defer src="sankey.js"></script>
-  <script defer src="cloud_api.js"></script>
-  <script defer src="sankeymatic.js"></script>
+  <script type="module" src="main.js"></script>
   <meta name="description"
     content="Make beautiful Sankey diagrams. Export them as images or SVG with this free data visualization tool." />
   <meta property="og:title" content="SankeyMATIC: Build a Sankey Diagram" />
