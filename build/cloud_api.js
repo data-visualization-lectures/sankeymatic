@@ -4,13 +4,14 @@
     const APP_ID = "sankeymatic";
 
     class CloudApi {
-        static getAuthToken() {
-            const session = window.supabase?.auth?.session();
-            return session?.access_token;
+        static async getAuthToken() {
+            if (!window.supabase) return null;
+            const { data } = await window.supabase.auth.getSession();
+            return data?.session?.access_token;
         }
 
         static async request(endpoint, options = {}) {
-            const token = this.getAuthToken();
+            const token = await this.getAuthToken();
             if (!token) {
                 alert("ログインしてください。");
                 throw new Error("Not authenticated");
