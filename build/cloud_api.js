@@ -8,7 +8,8 @@
         static async saveProject(name, data, thumbnailBlob) {
             if (!window.supabase) throw new Error("Supabase client not initialized");
 
-            const { data: { user } } = await window.supabase.auth.getUser();
+            const { data: { session } } = await window.supabase.auth.getSession();
+            const user = session?.user;
             if (!user) {
                 alert("ログインしてください。");
                 throw new Error("Not authenticated");
