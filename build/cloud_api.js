@@ -56,6 +56,10 @@
             const { supabaseUrl, supabaseKey } = this.getDbConfig();
             const dbEndpoint = `${supabaseUrl}/rest/v1/${TABLE_NAME}?apikey=${supabaseKey}`;
 
+            // Use current tool's URL base, not AUTH_APP_URL
+            const toolBaseUrl = window.location.origin + window.location.pathname;
+            const projectUrl = `${toolBaseUrl}?project_id=${uuid}`;
+
             const payload = {
                 id: uuid,
                 user_id: user.id,
@@ -63,6 +67,7 @@
                 app_name: APP_ID,
                 storage_path: jsonPath,
                 thumbnail_path: thumbPath,
+                url: projectUrl,
                 created_at: now,
                 updated_at: now
             };
