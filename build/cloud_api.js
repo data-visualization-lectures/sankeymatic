@@ -67,7 +67,6 @@
                 app_name: APP_ID,
                 storage_path: jsonPath,
                 thumbnail_path: thumbPath,
-                url: projectUrl,
                 created_at: now,
                 updated_at: now
             };
