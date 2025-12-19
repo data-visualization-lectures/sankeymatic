@@ -1,73 +1,137 @@
 /* cloud_api.js - Wrapped to avoid global namespace pollution */
 (function () {
-    const API_BASE = "https://api.dataviz.jp";
     const APP_ID = "sankeymatic";
+    const BUCKET_NAME = "user_projects";
+    const TABLE_NAME = "projects";
 
     class CloudApi {
-        static async getAuthToken() {
-            if (!window.supabase) return null;
-            const { data } = await window.supabase.auth.getSession();
-            return data?.session?.access_token;
-        }
+        static async saveProject(name, data, thumbnailBlob) {
+            if (!window.supabase) throw new Error("Supabase client not initialized");
 
-        static async request(endpoint, options = {}) {
-            const token = await this.getAuthToken();
-            if (!token) {
+            const { data: { user } } = await window.supabase.auth.getUser();
+            if (!user) {
                 alert("ログインしてください。");
                 throw new Error("Not authenticated");
             }
 
-            const headers = {
-                "Authorization": `Bearer ${token}`,
-                ...options.headers,
-            };
+            const uuid = crypto.randomUUID();
+            const jsonPath = `${user.id}/${uuid}.json`;
+            const thumbPath = thumbnailBlob ? `${user.id}/${uuid}.png` : null;
+            const now = new Date().toISOString();
 
-            // If body is NOT FormData, set JSON content type. 
-            // Browser sets Content-Type (with boundary) automatically for FormData.
-            if (!(options.body instanceof FormData)) {
-                headers["Content-Type"] = "application/json";
+            // 1. Upload JSON to Storage
+            const { error: jsonError } = await window.supabase.storage
+                .from(BUCKET_NAME)
+                .upload(jsonPath, JSON.stringify(data), {
+                    contentType: 'application/json',
+                    upsert: true
+                });
+
+            if (jsonError) {
+                console.error("JSON Upload Error:", jsonError);
+                throw new Error("保存に失敗しました (JSON Upload)");
             }
 
-            const response = await fetch(`${API_BASE}${endpoint}`, {
-                ...options,
-                headers,
-            });
-
-            if (!response.ok) {
-                const error = await response.json().catch(() => ({}));
-                throw new Error(error.message || `API Error: ${response.status}`);
+            // 2. Upload Thumbnail to Storage (if valid)
+            if (thumbnailBlob && thumbPath) {
+                const { error: thumbError } = await window.supabase.storage
+                    .from(BUCKET_NAME)
+                    .upload(thumbPath, thumbnailBlob, {
+                        contentType: 'image/png',
+                        upsert: true
+                    });
+                if (thumbError) {
+                    console.warn("Thumbnail Upload Warning:", thumbError);
+                    // Continue even if thumbnail fails
+                }
             }
 
-            return response.json();
-        }
+            // 3. Save Metadata to DB
+            const { error: dbError } = await window.supabase
+                .from(TABLE_NAME)
+                .insert({
+                    id: uuid,
+                    user_id: user.id,
+                    name: name,
+                    app_name: APP_ID,
+                    storage_path: jsonPath,
+                    thumbnail_path: thumbPath,
+                    // If your DB has JSONB data column, you could populate it, but reference uses storage logic
+                    // data: data, 
+                    created_at: now,
+                    updated_at: now
+                });
 
-        static async listProjects() {
-            return this.request(`/api/projects?app=${APP_ID}`);
+            if (dbError) {
+                // Cleanup storage if DB fails? For now just throw.
+                console.error("DB Insert Error:", dbError);
+                throw new Error("保存に失敗しました (DB Insert)");
+            }
         }
 
         static async loadProject(id) {
-            return this.request(`/api/projects/${id}`);
-        }
+            // 1. Get path from DB
+            const { data: row, error: dbError } = await window.supabase
+                .from(TABLE_NAME)
+                .select('storage_path')
+                .eq('id', id)
+                .single();
 
-        static async saveProject(name, data, thumbnailBlob) {
-            const formData = new FormData();
-            formData.append('name', name);
-            formData.append('app_name', APP_ID);
-            formData.append('data', JSON.stringify(data));
-            if (thumbnailBlob) {
-                formData.append('thumbnail', thumbnailBlob, 'thumbnail.png');
+            if (dbError || !row) {
+                throw new Error("プロジェクト情報が見つかりません");
             }
 
-            return this.request("/api/projects", {
-                method: "POST",
-                body: formData,
-            });
+            // 2. Download JSON from Storage
+            const { data: blob, error: storageError } = await window.supabase.storage
+                .from(BUCKET_NAME)
+                .download(row.storage_path);
+
+            if (storageError) {
+                throw new Error("データの読み込みに失敗しました");
+            }
+
+            return JSON.parse(await blob.text());
+        }
+
+        static async listProjects() {
+            const { data, error } = await window.supabase
+                .from(TABLE_NAME)
+                .select('*')
+                .eq('app_name', APP_ID)
+                .order('updated_at', { ascending: false });
+
+            if (error) {
+                console.error("List Projects Error:", error);
+                throw new Error("一覧の取得に失敗しました");
+            }
+            return data;
         }
 
         static async deleteProject(id) {
-            return this.request(`/api/projects/${id}`, {
-                method: "DELETE",
-            });
+            // 1. Get paths to delete files later
+            const { data: row } = await window.supabase
+                .from(TABLE_NAME)
+                .select('storage_path, thumbnail_path')
+                .eq('id', id)
+                .single();
+
+            // 2. Delete from DB
+            const { error: dbError } = await window.supabase
+                .from(TABLE_NAME)
+                .delete()
+                .eq('id', id);
+
+            if (dbError) {
+                throw new Error("削除に失敗しました");
+            }
+
+            // 3. Delete files from Storage (Best effort)
+            if (row) {
+                const paths = [row.storage_path];
+                if (row.thumbnail_path) paths.push(row.thumbnail_path);
+                // remove takes an array of file names
+                await window.supabase.storage.from(BUCKET_NAME).remove(paths);
+            }
         }
     }
 
