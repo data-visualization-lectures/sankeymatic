@@ -376,7 +376,7 @@ svg g#sankey_labels rect {
 td#other_entry {
   padding: 0 2px;
   background-color: #cce8ff;
-  vertical-align: middle;
+  vertical-align: top;
 }
 
 td#grapharea {
