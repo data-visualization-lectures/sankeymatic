@@ -46,7 +46,7 @@ window.skmSettings
     ['themeoffset_b', ['whole', 0, [0, 9]]],
     ['themeoffset_c', ['whole', 0, [0, 7]]],
     ['themeoffset_d', ['whole', 0, [0, 11]]],
-    ['meta_mentionsankeymatic', ['yn', 'y', []]],
+
     ['meta_listimbalances', ['yn', 'y', []]],
     // 'internal' settings are never exported, but can be imported:
     ['internal_iterations', ['whole', 25, [0, 50]]],

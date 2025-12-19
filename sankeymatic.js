@@ -1381,20 +1381,7 @@ Requires:
       .attr('font-size', `${cfg.labelname_size}px`)
       .attr('font-weight', cfg.labelname_weight)
       .attr('fill', cfg.labels_color);
-    if (cfg.meta_mentionsankeymatic) {
-      diagLabels.append('text')
-        // Anchor the text to the midpoint of the canvas (not the graph):
-        .attr('text-anchor', 'middle')
-        // x = graphW/2 is wrong when the L/R margins are uneven.. We
-        // have to use the whole width & adjust for the graph's transform:
-        .attr('x', cfg.size_w / 2 - graph.final_margin_l)
-        .attr('y', graph.h + cfg.margin_b - 5)
-        // Keep the current font, but make this small & grey:
-        .attr('font-size', '11px')
-        .attr('font-weight', '400')
-        .attr('fill', contrasting_gray_color(cfg.bg_color))
-        .text('Made with SankeyMATIC');
-    }
+
 
     if (cfg.labelname_appears) {
       // Add labels in a distinct layer on the top (so nodes can't block them)
