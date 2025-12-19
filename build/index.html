@@ -594,10 +594,31 @@ Budget [160] Other Necessities #0F0
         </p>
       </div>
     </div>
-    </td>
-    </tr>
-    </table>
 
+    <!-- EXPORT -->
+    <div class="expandable_box">
+      <p id="download_central" class="form_box">
+        <strong>Export:</strong>
+        <button id="save_as_png_2x" type="submit" title="PNG image file: 1200 x 1200"
+          onclick="saveDiagramAsPNG(2); return false;"><strong>PNG</strong></button>
+        <span class="toggleable" onclick="togglePanel('png_size_options');" title="Select to choose another resolution">
+          <span id="png_size_options_indicator" class="indicator1">+</span>
+          <small>オプション</small><span id="png_size_options_hint">...</span></span>
+        <span id="png_size_options" style="display: none;">
+          <button id="save_as_png_4x" type="submit" title="PNG image file: 2400 x 2400"
+            onclick="saveDiagramAsPNG(4); return false;"><strong>Large</strong> (4x)</button>
+          <button id="save_as_png_6x" type="submit" title="PNG image file: 3600 x 3600"
+            onclick="saveDiagramAsPNG(6); return false;"><strong>Huge</strong> (6x)</button>
+          <button id="save_as_png_1x" type="submit" title="PNG image file: 600 x 600"
+            onclick="saveDiagramAsPNG(1); return false;"><strong>Tiny</strong> (1x)</button>
+        </span>
+        <span style="padding-left: 0.4em; padding-right: 0.4em;">もしくは</span>
+        <button id="save_as_svg" type="submit" title="Save this diagram as a Scalable Vector Graphics file"
+          onclick="saveDiagramAsSVG(); return false;"><strong>SVG</strong></button>
+        <button id="save_as_json" type="submit" title="Save this diagram and settings as a JSON file"
+          onclick="saveDiagramAsJSON(); return false;" style="display: none;"><strong>JSON</strong></button>
+      </p>
+    </div>
     </td>
     <td id="grapharea">
       <!-- SIZE & SPACING & BACKGROUND -->
@@ -605,30 +626,7 @@ Budget [160] Other Necessities #0F0
 
 
       <!-- EXPORT -->
-      <div class="expandable_box">
-        <p id="download_central" class="form_box">
-          <strong>Export:</strong>
-          <button id="save_as_png_2x" type="submit" title="PNG image file: 1200 x 1200"
-            onclick="saveDiagramAsPNG(2); return false;"><strong>PNG</strong></button>
-          <span class="toggleable" onclick="togglePanel('png_size_options');"
-            title="Select to choose another resolution">
-            <span id="png_size_options_indicator" class="indicator1">+</span>
-            <small>オプション</small><span id="png_size_options_hint">...</span></span>
-          <span id="png_size_options" style="display: none;">
-            <button id="save_as_png_4x" type="submit" title="PNG image file: 2400 x 2400"
-              onclick="saveDiagramAsPNG(4); return false;"><strong>Large</strong> (4x)</button>
-            <button id="save_as_png_6x" type="submit" title="PNG image file: 3600 x 3600"
-              onclick="saveDiagramAsPNG(6); return false;"><strong>Huge</strong> (6x)</button>
-            <button id="save_as_png_1x" type="submit" title="PNG image file: 600 x 600"
-              onclick="saveDiagramAsPNG(1); return false;"><strong>Tiny</strong> (1x)</button>
-          </span>
-          <span style="padding-left: 0.4em; padding-right: 0.4em;">もしくは</span>
-          <button id="save_as_svg" type="submit" title="Save this diagram as a Scalable Vector Graphics file"
-            onclick="saveDiagramAsSVG(); return false;"><strong>SVG</strong></button>
-          <button id="save_as_json" type="submit" title="Save this diagram and settings as a JSON file"
-            onclick="saveDiagramAsJSON(); return false;" style="display: none;"><strong>JSON</strong></button>
-        </p>
-      </div>
+
 
       <!-- MOVING NODES -->
       <p id="reset_moves_area" class="form_elements1">
