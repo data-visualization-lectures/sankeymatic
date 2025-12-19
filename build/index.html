@@ -57,6 +57,12 @@
         <ul>
           <li><a title="SankeyMATIC home page" href="/"><img alt="SankeyMATIC logo" src="i/SKM-trsp-300.png" height="27"
                 width="27" class="skm_logo_small" />&nbsp;<strong>SankeyMATIC</strong></a></li>
+          <li>
+            <label for="load_diagram_from_file" class="nav_button"
+              style="cursor: pointer; color: #000; background: #ddd; padding: 2px 8px; border-radius: 4px; font-size: 13px; margin-left: 10px;">プロジェクト・ファイルの読込</label>
+            <button type="button" onclick="saveDiagramAsJSON(); return false;" class="nav_button"
+              style="cursor: pointer; color: #000; background: #ddd; padding: 2px 8px; border: none; border-radius: 4px; font-size: 13px; margin-left: 5px;">プロジェクト・ファイルの保存</button>
+          </li>
           <!-- <li><a title="Build a Sankey Diagram" href="/build/">Build a Sankey Diagram</a></li>
   <li><a title="How to use SankeyMATIC to the fullest" href="/manual/">Manual</a></li>
   <li><a title="What's New with SankeyMATIC'" href="/news/">News</a></li>
@@ -141,9 +147,10 @@ Budget [160] Other Necessities #0F0
                         <div class="bottom_center_self">
                           <button id="save_my_work_button" type="submit" class="loadsave_button"
                             onclick="saveDiagramToFile(); return false;"
-                            title="Save the current diagram and settings to a local text file">保存する &#9660;</button>
+                            title="Save the current diagram and settings to a local text file"
+                            style="display: none;">保存する &#9660;</button>
 
-                          <p>
+                          <p style="display: none;">
                             <input type="file" id="load_diagram_from_file"
                               accept=".txt,.text,.skm,.json,text/plain,application/json" class="hidden_under"
                               onchange="loadDiagramFile(); return null;" />
@@ -618,7 +625,7 @@ Budget [160] Other Necessities #0F0
                   <button id="save_as_svg" type="submit" title="Save this diagram as a Scalable Vector Graphics file"
                     onclick="saveDiagramAsSVG(); return false;"><strong>SVG</strong></button>
                   <button id="save_as_json" type="submit" title="Save this diagram and settings as a JSON file"
-                    onclick="saveDiagramAsJSON(); return false;"><strong>JSON</strong></button>
+                    onclick="saveDiagramAsJSON(); return false;" style="display: none;"><strong>JSON</strong></button>
                 </p>
               </div>
 
