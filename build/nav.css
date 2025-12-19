@@ -58,8 +58,8 @@ header nav {
   text-align: center;
 }
 
-.main_nav_items a:hover {
-  background-color: #069;
+.main_nav_items label {
+    display: inline-block;
 }
 
 .sidenavlinks {
