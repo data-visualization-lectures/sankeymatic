@@ -555,37 +555,3 @@ input:checked ~ label.ropt,
 .theme_container input:checked ~ * {
   color: var(--selected-option);
 }
-
-/* Cloud Save/Load Modal Styles */
-dialog.cloud-modal {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  padding: 20px;
-  min-width: 400px;
-  max-width: 600px;
-  background: #fff;
-  z-index: 10000;
-}
-dialog.cloud-modal::backdrop {
-  background: rgba(0,0,0,0.5);
-}
-dialog.cloud-modal h3 {
-  margin-top: 0;
-  color: #036;
-}
-dialog.cloud-modal button {
-  padding: 5px 12px;
-  margin-left: 5px;
-  border: 1px solid #999;
-  border-radius: 4px;
-  background: #eee;
-  cursor: pointer;
-}
-dialog.cloud-modal button:hover {
-  background: #ddd;
-}
-dialog.cloud-modal input[type="text"] {
-  border: 1px solid #999;
-  border-radius: 4px;
-}

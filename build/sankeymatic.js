@@ -2253,6 +2253,77 @@ ${sourceURLLine}
     glob.process_sankey(userFileName);
   };
 
+  glob.saveCloudProjectUI = () => {
+    // 1. Gather Settings
+    const settings = {};
+    skmSettings.forEach((fldData, fldName) => {
+      if (!fldName.startsWith('internal_')) {
+        const dataType = fldData[0];
+        settings[fldName] = getHumanValueFromPage(fldName, dataType);
+      }
+    });
+
+    // 2. Gather Flows
+    const flows = removeAutoLines(elV(userInputsField).split('\n')).join('\n');
+
+    // 3. Gather Moves
+    const moves = {};
+    glob.rememberedMoves.forEach((move, nodeName) => {
+      moves[nodeName] = move;
+    });
+
+    // 4. Construct Object
+    const diagramData = {
+      metadata: {
+        saved_at: new Date().toISOString(),
+        generator: 'SankeyMATIC',
+        version: '1.0'
+      },
+      settings: settings,
+      flows: flows,
+      moves: moves
+    };
+
+    window.CloudUI.openSaveModal(diagramData);
+  };
+
+  glob.loadCloudProjectUI = () => {
+    window.CloudUI.openLoadModal((data) => {
+      glob.loadProjectData(data);
+    });
+  };
+
+  glob.loadProjectData = (jsonData) => {
+    // 1. Restore Flows
+    if (typeof jsonData.flows === 'string') {
+      el(userInputsField).value = jsonData.flows;
+    }
+
+    // 2. Restore Settings
+    if (jsonData.settings && typeof jsonData.settings === 'object') {
+      Object.entries(jsonData.settings).forEach(([fld, val]) => {
+        const fldData = skmSettings.get(fld);
+        if (fldData) {
+          const [isValid, finalVal] = settingIsValid(fldData, val, {});
+          if (isValid) {
+            setValueOnPage(fld, fldData[0], finalVal);
+          }
+        }
+      });
+    }
+
+    // 3. Restore Moves
+    if (jsonData.moves && typeof jsonData.moves === 'object') {
+      glob.rememberedMoves.clear();
+      Object.entries(jsonData.moves).forEach(([nodeName, move]) => {
+        glob.rememberedMoves.set(nodeName, move);
+      });
+    }
+
+    // 4. Render
+    glob.process_sankey();
+  };
+
   // Listen for events from the Common Header (dataviz-auth-client.js)
   window.addEventListener('dataviz-save-trigger', () => {
     glob.saveDiagramAsJSON();

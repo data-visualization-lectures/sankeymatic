@@ -14,6 +14,7 @@
   <script defer src="supabase.js"></script>
   <script defer src="dataviz-auth-client.js"></script>
   <script defer src="sankey.js"></script>
+  <script defer src="cloud_api.js"></script>
   <script defer src="sankeymatic.js"></script>
   <meta name="description"
     content="Make beautiful Sankey diagrams. Export them as images or SVG with this free data visualization tool." />
@@ -58,9 +59,9 @@
           <li><a title="SankeyMATIC home page" href="/"><img alt="SankeyMATIC logo" src="i/SKM-trsp-300.png" height="27"
                 width="27" class="skm_logo_small" />&nbsp;<strong>SankeyMATIC</strong></a></li>
           <li>
-            <label for="load_diagram_from_file" class="nav_button"
-              style="cursor: pointer; color: #000; background: #ddd; padding: 2px 8px; border-radius: 4px; font-size: 13px; margin-left: 10px;">プロジェクト・ファイルの読込</label>
-            <button type="button" onclick="saveDiagramAsJSON(); return false;" class="nav_button"
+            <button type="button" onclick="glob.loadCloudProjectUI(); return false;" class="nav_button"
+              style="cursor: pointer; color: #000; background: #ddd; padding: 2px 8px; border: none; border-radius: 4px; font-size: 13px; margin-left: 10px;">プロジェクト・ファイルの読込</button>
+            <button type="button" onclick="glob.saveCloudProjectUI(); return false;" class="nav_button"
               style="cursor: pointer; color: #000; background: #ddd; padding: 2px 8px; border: none; border-radius: 4px; font-size: 13px; margin-left: 5px;">プロジェクト・ファイルの保存</button>
           </li>
           <!-- <li><a title="Build a Sankey Diagram" href="/build/">Build a Sankey Diagram</a></li>
