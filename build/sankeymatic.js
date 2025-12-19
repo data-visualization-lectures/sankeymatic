@@ -2396,7 +2396,8 @@ ${sourceURLLine}
   // --- Auto-load from query param (Cloud Launch) ---
   window.addEventListener('load', () => {
     const params = new URLSearchParams(window.location.search);
-    const projectId = params.get('project_id');
+    // Use rescued ID if URL param is gone
+    const projectId = params.get('project_id') || window.SKM_PROJECT_ID;
     if (projectId) {
       console.log("Found project_id:", projectId);
       let attempts = 0;

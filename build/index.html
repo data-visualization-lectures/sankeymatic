@@ -11,6 +11,15 @@
   <script defer src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/canvg@3/lib/umd.js" crossorigin="anonymous"></script>
   <script defer src="constants.js"></script>
+  <script>
+    /* Rescue project_id before dataviz-auth-client.js clears it */
+    (function () {
+      if (window.location.search) {
+        const p = new URLSearchParams(window.location.search).get('project_id');
+        if (p) window.SKM_PROJECT_ID = p;
+      }
+    })();
+  </script>
   <script defer src="supabase.js"></script>
   <script defer src="dataviz-auth-client.js"></script>
   <script defer src="sankey.js"></script>
