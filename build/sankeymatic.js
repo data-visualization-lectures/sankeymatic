@@ -2205,6 +2205,50 @@ ${sourceURLLine}
     // Read the text:
     const uploadedText = await fileList[0].text(),
       userFileName = fileList[0].name;
+
+    // Simple check for JSON format:
+    if (uploadedText.trim().startsWith('{')) {
+      try {
+        const jsonData = JSON.parse(uploadedText);
+
+        // 1. Restore Flows
+        // Verify that 'flows' exists before trying to use it:
+        if (typeof jsonData.flows === 'string') {
+          el(userInputsField).value = jsonData.flows;
+        }
+
+        // 2. Restore Settings
+        if (jsonData.settings && typeof jsonData.settings === 'object') {
+          Object.entries(jsonData.settings).forEach(([fld, val]) => {
+            const fldData = skmSettings.get(fld);
+            if (fldData) {
+              // Validate and apply the setting:
+              const [isValid, finalVal] = settingIsValid(fldData, val, {});
+              if (isValid) {
+                setValueOnPage(fld, fldData[0], finalVal);
+              }
+            }
+          });
+        }
+
+        // 3. Restore Moves
+        if (jsonData.moves && typeof jsonData.moves === 'object') {
+          glob.rememberedMoves.clear();
+          Object.entries(jsonData.moves).forEach(([nodeName, move]) => {
+            glob.rememberedMoves.set(nodeName, move);
+          });
+        }
+
+        // 4. Render
+        glob.process_sankey(userFileName);
+        return;
+
+      } catch (e) {
+        console.warn('File looked like JSON but failed to parse:', e);
+        // Fall through to try treating it as a regular text file, just in case
+      }
+    }
+
     el(userInputsField).value = uploadedText;
     glob.process_sankey(userFileName);
   };

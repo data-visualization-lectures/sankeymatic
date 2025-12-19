@@ -144,8 +144,9 @@ Budget [160] Other Necessities #0F0
                             title="Save the current diagram and settings to a local text file">保存する &#9660;</button>
 
                           <p>
-                            <input type="file" id="load_diagram_from_file" accept=".txt,.text,.skm,text/plain"
-                              class="hidden_under" onchange="loadDiagramFile(); return null;" />
+                            <input type="file" id="load_diagram_from_file"
+                              accept=".txt,.text,.skm,.json,text/plain,application/json" class="hidden_under"
+                              onchange="loadDiagramFile(); return null;" />
                             <label id="load_diagram_button" for="load_diagram_from_file" role="button"
                               class="label_as_button loadsave_button"
                               title="Load a diagram definition from a text file">&#9668; 読み込む</label>
