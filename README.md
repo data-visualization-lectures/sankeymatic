@@ -6,7 +6,7 @@
 npm install
 
 ### ビルド
-npm build
+npm run build
 
 ### 開発モードで起動 
 npm run dev
