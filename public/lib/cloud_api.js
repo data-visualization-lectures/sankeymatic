@@ -30,12 +30,6 @@
                 } else {
                     thumbnail = await this.blobToBase64(thumbnailInput);
                 }
-
-                // Ensure we send raw base64 without data URI prefix if present
-                // Some backends fail to strip this automatically
-                if (thumbnail && thumbnail.startsWith('data:')) {
-                    thumbnail = thumbnail.split(',')[1];
-                }
             }
 
             const payload = {
