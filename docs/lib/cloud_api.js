@@ -24,20 +24,18 @@
             const token = await this.getAuthToken();
             let thumbnail = null;
 
-            console.log("API_DEBUG: saveProject input type:", typeof thumbnailInput);
-            if (typeof thumbnailInput === 'string') {
-                console.log("API_DEBUG: thumbnailInput length:", thumbnailInput.length, "Head:", thumbnailInput.substring(0, 30));
-            }
-
             if (thumbnailInput) {
                 if (typeof thumbnailInput === 'string') {
                     thumbnail = thumbnailInput;
                 } else {
                     thumbnail = await this.blobToBase64(thumbnailInput);
                 }
-                console.log("Thumbnail base64 length:", thumbnail ? thumbnail.length : 0);
-            } else {
-                console.warn("No thumbnail input provided to saveProject");
+
+                // Ensure we send raw base64 without data URI prefix if present
+                // Some backends fail to strip this automatically
+                if (thumbnail && thumbnail.startsWith('data:')) {
+                    thumbnail = thumbnail.split(',')[1];
+                }
             }
 
             const payload = {
@@ -46,8 +44,6 @@
                 data: data,
                 thumbnail: thumbnail
             };
-
-            console.log("API_DEBUG: Final Payload thumbnail:", payload.thumbnail ? payload.thumbnail.substring(0, 50) + "..." : "NULL");
 
             const response = await fetch(`${API_BASE}/api/projects`, {
                 method: 'POST',
