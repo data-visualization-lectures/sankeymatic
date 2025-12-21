@@ -551,11 +551,11 @@ Budget [160] Other Necessities #0F0
     <!-- DIAGRAM SIZE & BACKGROUND -->
     <div class="expandable_box">
       <h2 class="ui_head" onclick="togglePanel('diagram_options');">
-        <span id="diagram_options_indicator" class="indicator">&ndash;</span>
-        ダイアグラムのサイズ &amp; 背景<span id="diagram_options_hint">:</span>
+        <span id="diagram_options_indicator" class="indicator">+</span>
+        ダイアグラムのサイズ &amp; 背景<span id="diagram_options_hint">...</span>
       </h2>
 
-      <div id="diagram_options" class="form_chunk">
+      <div id="diagram_options" class="form_chunk" style="display: none;">
         <p class="form_elements1">
           <span class="no_wrap"><label for="size_w" title="Diagram Width in pixels"><strong>横幅:</strong></label>
             <input id="size_w" type="number" class="wholenumber number_10000s" min="40" value="600" step="2"
