@@ -52,10 +52,10 @@
           <li><a title="SankeyMATIC home page" href="/"><img alt="SankeyMATIC logo" src="i/SKM-trsp-300.png" height="27"
                 width="27" class="skm_logo_small" />&nbsp;<strong>SankeyMATIC</strong></a></li>
           <li>
-            <button type="button" onclick="loadCloudProjectUI(); return false;" class="nav_button"
-              style="cursor: pointer; color: #000; background: #ddd; padding: 2px 8px; border: none; border-radius: 4px; font-size: 13px; margin-left: 10px;">プロジェクト・ファイルの読込</button>
             <button type="button" onclick="saveCloudProjectUI(); return false;" class="nav_button"
               style="cursor: pointer; color: #000; background: #ddd; padding: 2px 8px; border: none; border-radius: 4px; font-size: 13px; margin-left: 5px;">プロジェクト・ファイルの保存</button>
+            <button type="button" onclick="loadCloudProjectUI(); return false;" class="nav_button"
+              style="cursor: pointer; color: #000; background: #ddd; padding: 2px 8px; border: none; border-radius: 4px; font-size: 13px; margin-left: 10px;">プロジェクト・ファイルの読込</button>
           </li>
           <!-- <li><a title="Build a Sankey Diagram" href="/build/">Build a Sankey Diagram</a></li>
   <li><a title="How to use SankeyMATIC to the fullest" href="/manual/">Manual</a></li>
@@ -87,12 +87,12 @@
           </h4>
 
           <p id="replace_graph_warning" style="display: none;">
-            <em>This will <strong>erase</strong> your changes. Are you sure?</em><br />
+            <em>現在のプロジェクトを<strong>置き換えて</strong>してしまいます。本当に実行しますか？</em><br />
             <input type="hidden" id="demo_graph_chosen" value="" />
-            <button type="button" id="replace_graph_yes" onclick="replaceGraphConfirmed(); return false;">Yes, replace
-              the diagram</button>
+            <button type="button" id="replace_graph_yes"
+              onclick="replaceGraphConfirmed(); return false;">はい、置き換えてください</button>
             <button type="button" id="replace_graph_no"
-              onclick="hideReplaceGraphWarning(); return false;">Cancel</button>
+              onclick="hideReplaceGraphWarning(); return false;">キャンセル</button>
           </p>
         </div>
 
@@ -136,7 +136,7 @@ Budget [160] Other Necessities #0F0
 
                       <div class="separated_stack">
 
-                        <div class="top_center_self"><button id="preview_graph" type="submit">表示 &gt;</button></div>
+                        <div class="top_center_self"><button id="preview_graph" type="submit">表示する</button></div>
 
                         <div class="bottom_center_self">
                           <button id="save_my_work_button" type="submit" class="loadsave_button"

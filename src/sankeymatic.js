@@ -596,7 +596,8 @@ Requires:
       // Show the warning and do NOT replace the graph:
       el('replace_graph_warning').style.display = '';
       el('replace_graph_yes').textContent
-        = `Yes, replace the graph with '${savedRecipe.name}'`;
+        // = `Yes, replace the graph with '${savedRecipe.name}'`;
+        = `はい '${savedRecipe.name}'と置き換えてください`;
     }
 
     return null;
