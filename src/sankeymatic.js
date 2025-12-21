@@ -2285,9 +2285,10 @@ ${sourceURLLine}
 
     // 5. Generate Thumbnail
     const [size, pngDataURL] = scaledPNG(1);
-    const thumbBlob = dataURItoBlob(pngDataURL);
+    // Pass Base64 string directly - robust and supported by updated CloudApi
+    // const thumbBlob = dataURItoBlob(pngDataURL);
 
-    window.CloudUI.openSaveModal(diagramData, thumbBlob);
+    window.CloudUI.openSaveModal(diagramData, pngDataURL);
   };
 
   glob.loadCloudProjectUI = () => {

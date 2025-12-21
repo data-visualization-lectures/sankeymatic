@@ -20,11 +20,21 @@
             });
         }
 
-        static async saveProject(name, data, thumbnailBlob) {
+        static async saveProject(name, data, thumbnailInput) {
             const token = await this.getAuthToken();
             let thumbnail = null;
-            if (thumbnailBlob) {
-                thumbnail = await this.blobToBase64(thumbnailBlob);
+
+            console.log("saveProject input type:", typeof thumbnailInput);
+
+            if (thumbnailInput) {
+                if (typeof thumbnailInput === 'string') {
+                    thumbnail = thumbnailInput;
+                } else {
+                    thumbnail = await this.blobToBase64(thumbnailInput);
+                }
+                console.log("Thumbnail base64 length:", thumbnail ? thumbnail.length : 0);
+            } else {
+                console.warn("No thumbnail input provided to saveProject");
             }
 
             const payload = {
@@ -146,9 +156,9 @@
         },
 
         // --- SAVE UI ---
-        openSaveModal: (currentData, thumbnailBlob) => {
+        openSaveModal: (currentData, thumbnailInput) => {
             window.CloudUI.pendingSaveData = currentData;
-            window.CloudUI.pendingThumbnail = thumbnailBlob;
+            window.CloudUI.pendingThumbnail = thumbnailInput;
 
             let modal = document.getElementById('cloud-save-modal');
             if (!modal) {
@@ -203,9 +213,16 @@
             // Preview Thumbnail
             const previewDiv = modal.querySelector('#cloud-save-preview');
             const previewImg = modal.querySelector('#cloud-save-thumb-preview');
-            if (thumbnailBlob) {
-                const url = URL.createObjectURL(thumbnailBlob);
-                previewImg.src = url;
+
+            if (thumbnailInput) {
+                if (typeof thumbnailInput === 'string') {
+                    // Assume Data URL
+                    previewImg.src = thumbnailInput;
+                } else {
+                    // Assume Blob/File
+                    const url = URL.createObjectURL(thumbnailInput);
+                    previewImg.src = url;
+                }
                 previewDiv.style.display = 'block';
             } else {
                 previewDiv.style.display = 'none';
