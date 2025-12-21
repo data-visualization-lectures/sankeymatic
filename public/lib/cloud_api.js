@@ -24,7 +24,10 @@
             const token = await this.getAuthToken();
             let thumbnail = null;
 
-            console.log("saveProject input type:", typeof thumbnailInput);
+            console.log("API_DEBUG: saveProject input type:", typeof thumbnailInput);
+            if (typeof thumbnailInput === 'string') {
+                console.log("API_DEBUG: thumbnailInput length:", thumbnailInput.length, "Head:", thumbnailInput.substring(0, 30));
+            }
 
             if (thumbnailInput) {
                 if (typeof thumbnailInput === 'string') {
@@ -43,6 +46,8 @@
                 data: data,
                 thumbnail: thumbnail
             };
+
+            console.log("API_DEBUG: Final Payload thumbnail:", payload.thumbnail ? payload.thumbnail.substring(0, 50) + "..." : "NULL");
 
             const response = await fetch(`${API_BASE}/api/projects`, {
                 method: 'POST',

@@ -228,6 +228,7 @@ Requires:
     canvasEl.height = scaled.h;
 
     // Give Canvg what it needs to produce a rendered image:
+    console.log('GEN_DEBUG: Starting canvg generation', { width: scaled.w, height: scaled.h });
     const canvgObj = await canvg.Canvg.fromString(
       canvasContext,
       svgContent,
@@ -242,9 +243,12 @@ Requires:
       }
     );
     await canvgObj.render();
+    console.log('GEN_DEBUG: canvg render complete');
 
     // Turn canvg's output into a data URL and return it with size info:
-    return [scaled, canvasEl.toDataURL('image/png')];
+    const finalDataUrl = canvasEl.toDataURL('image/png');
+    console.log('GEN_DEBUG: scaledPNG dataURL length:', finalDataUrl.length, 'Head:', finalDataUrl.substring(0, 40));
+    return [scaled, finalDataUrl];
   }
 
   // downloadABlob: given an object & a filename, send it to the user:
@@ -2284,7 +2288,10 @@ ${sourceURLLine}
     };
 
     // 5. Generate Thumbnail
+    console.log('GEN_DEBUG: Calling scaledPNG(1) from saveCloudProjectUI');
     const [size, pngDataURL] = await scaledPNG(1);
+    console.log('GEN_DEBUG: saveCloudProjectUI got thumbnail', { size, urlLength: pngDataURL ? pngDataURL.length : 'NULL' });
+
     // Pass Base64 string directly - robust and supported by updated CloudApi
     // const thumbBlob = dataURItoBlob(pngDataURL);
 
