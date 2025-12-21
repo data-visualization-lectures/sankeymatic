@@ -206,7 +206,7 @@ Requires:
   glob.humanTimestamp = () => new Date().toLocaleString();
 
   // scaledPNG: Build a data URL for a PNG representing the current diagram:
-  function scaledPNG(scale) {
+  async function scaledPNG(scale) {
     const chartEl = el('chart'),
       orig = { w: chartEl.clientWidth, h: chartEl.clientHeight },
       scaleFactor = clamp(scale, 1, 6),
@@ -228,7 +228,7 @@ Requires:
     canvasEl.height = scaled.h;
 
     // Give Canvg what it needs to produce a rendered image:
-    const canvgObj = canvg.Canvg.fromString(
+    const canvgObj = await canvg.Canvg.fromString(
       canvasContext,
       svgContent,
       {
@@ -241,7 +241,7 @@ Requires:
         offsetY: offset.y,
       }
     );
-    canvgObj.render();
+    await canvgObj.render();
 
     // Turn canvg's output into a data URL and return it with size info:
     return [scaled, canvasEl.toDataURL('image/png')];
@@ -258,8 +258,8 @@ Requires:
     newA.remove(); // Discard the Anchor we just clicked; it's no longer needed
   }
 
-  glob.saveDiagramAsPNG = (scale) => {
-    const [size, pngURL] = scaledPNG(scale);
+  glob.saveDiagramAsPNG = async (scale) => {
+    const [size, pngURL] = await scaledPNG(scale);
     downloadADataURL(
       pngURL,
       `sankeymatic_${glob.fileTimestamp()}_${size.w}x${size.h}.png`
@@ -2252,7 +2252,7 @@ ${sourceURLLine}
     return new Blob([ab], { type: mimeString });
   }
 
-  glob.saveCloudProjectUI = () => {
+  glob.saveCloudProjectUI = async () => {
     // 1. Gather Settings
     const settings = {};
     skmSettings.forEach((fldData, fldName) => {
@@ -2284,7 +2284,7 @@ ${sourceURLLine}
     };
 
     // 5. Generate Thumbnail
-    const [size, pngDataURL] = scaledPNG(1);
+    const [size, pngDataURL] = await scaledPNG(1);
     // Pass Base64 string directly - robust and supported by updated CloudApi
     // const thumbBlob = dataURItoBlob(pngDataURL);
 
