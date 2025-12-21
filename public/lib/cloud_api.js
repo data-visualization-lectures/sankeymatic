@@ -1,162 +1,96 @@
 /* cloud_api.js - Wrapped to avoid global namespace pollution */
 (function () {
     const APP_ID = "sankeymatic";
-    const BUCKET_NAME = "user_projects";
-    const TABLE_NAME = "projects";
+    const API_BASE = "https://api.dataviz.jp";
 
     class CloudApi {
-        static getDbConfig() {
+        static async getAuthToken() {
             if (!window.supabase) throw new Error("Supabase client not initialized");
-            // Some supabase clients store url/key directly, others in .rest object. v2 usually has them at top level.
-            // Fallback for key: try to find it in auth headers if stored privately, but usually exposed.
-            return {
-                supabaseUrl: window.supabase.supabaseUrl,
-                supabaseKey: window.supabase.supabaseKey
-            };
+            const { data: { session } } = await window.supabase.auth.getSession();
+            if (!session?.access_token) throw new Error("Not authenticated");
+            return session.access_token;
+        }
+
+        static blobToBase64(blob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
         }
 
         static async saveProject(name, data, thumbnailBlob) {
-            const { data: { session } } = await window.supabase.auth.getSession();
-            const user = session?.user;
-            if (!user) {
-                alert("ログインしてください。");
-                throw new Error("Not authenticated");
+            const token = await this.getAuthToken();
+            let thumbnail = null;
+            if (thumbnailBlob) {
+                thumbnail = await this.blobToBase64(thumbnailBlob);
             }
-
-            const uuid = crypto.randomUUID();
-            const jsonPath = `${user.id}/${uuid}.json`;
-            const thumbPath = thumbnailBlob ? `${user.id}/${uuid}.png` : null;
-            const now = new Date().toISOString();
-
-            // 1. Upload JSON to Storage (Using Client - verified working)
-            const { error: jsonError } = await window.supabase.storage
-                .from(BUCKET_NAME)
-                .upload(jsonPath, JSON.stringify(data), {
-                    contentType: 'application/json',
-                    upsert: true
-                });
-
-            if (jsonError) {
-                console.error("JSON Upload Error:", jsonError);
-                throw new Error("保存に失敗しました (JSON Upload)");
-            }
-
-            // 2. Upload Thumbnail to Storage
-            if (thumbnailBlob && thumbPath) {
-                const { error: thumbError } = await window.supabase.storage
-                    .from(BUCKET_NAME)
-                    .upload(thumbPath, thumbnailBlob, {
-                        contentType: 'image/png',
-                        upsert: true
-                    });
-                if (thumbError) console.warn("Thumbnail Upload Warning:", thumbError);
-            }
-
-            // 3. Save Metadata to DB (Using Raw Fetch to match reference implementation)
-            const { supabaseUrl, supabaseKey } = this.getDbConfig();
-            const dbEndpoint = `${supabaseUrl}/rest/v1/${TABLE_NAME}?apikey=${supabaseKey}`;
-
-            // Use current tool's URL base, not AUTH_APP_URL
-            const toolBaseUrl = window.location.origin + window.location.pathname;
-            const projectUrl = `${toolBaseUrl}?project_id=${uuid}`;
 
             const payload = {
-                id: uuid,
-                user_id: user.id,
                 name: name,
                 app_name: APP_ID,
-                storage_path: jsonPath,
-                thumbnail_path: thumbPath,
-                created_at: now,
-                updated_at: now
+                data: data,
+                thumbnail: thumbnail
             };
 
-            // Using fetch without Authorization header (Anonymous role access for this specific table setup)
-            // This bypasses the issue where Authenticated User RLS might be restricted but Anon is open (or misconfigured)
-            const dbResponse = await fetch(dbEndpoint, {
+            const response = await fetch(`${API_BASE}/api/projects`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Prefer': 'resolution=merge-duplicates,return=representation'
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(payload)
             });
 
-            if (!dbResponse.ok) {
-                const errText = await dbResponse.text();
-                console.error("DB Insert Error:", errText);
-                throw new Error(`DB保存失敗: ${dbResponse.status} ${errText}`);
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error(`保存失敗: ${response.status} ${errText}`);
             }
+
+            return await response.json();
         }
 
         static async loadProject(id) {
-            const { supabaseUrl, supabaseKey } = this.getDbConfig();
-
-            // 1. Get path from DB via Fetch
-            const dbEndpoint = `${supabaseUrl}/rest/v1/${TABLE_NAME}?select=storage_path&id=eq.${id}&apikey=${supabaseKey}`;
-            const dbResponse = await fetch(dbEndpoint, {
+            const token = await this.getAuthToken();
+            const response = await fetch(`${API_BASE}/api/projects/${id}`, {
                 method: 'GET',
-                headers: { 'Content-Type': 'application/json' }
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
             });
 
-            if (!dbResponse.ok) throw new Error("DB読込失敗");
-            const rows = await dbResponse.json();
-            if (!rows.length) throw new Error("プロジェクト情報が見つかりません");
-
-            // 2. Download JSON from Storage via Client (Auth required for private buckets usually)
-            const { data: blob, error: storageError } = await window.supabase.storage
-                .from(BUCKET_NAME)
-                .download(rows[0].storage_path);
-
-            if (storageError) throw new Error("Data読込失敗: " + storageError.message);
-
-            return JSON.parse(await blob.text());
+            if (!response.ok) throw new Error("読込失敗");
+            return await response.json();
         }
 
         static async listProjects() {
-            const { supabaseUrl, supabaseKey } = this.getDbConfig();
-            const dbEndpoint = `${supabaseUrl}/rest/v1/${TABLE_NAME}?select=*&app_name=eq.${APP_ID}&order=updated_at.desc&apikey=${supabaseKey}`;
-
-            const dbResponse = await fetch(dbEndpoint, {
+            const token = await this.getAuthToken();
+            const response = await fetch(`${API_BASE}/api/projects?app=${APP_ID}`, {
                 method: 'GET',
-                headers: { 'Content-Type': 'application/json' }
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
             });
 
-            if (!dbResponse.ok) {
-                const errText = await dbResponse.text();
+            if (!response.ok) {
+                const errText = await response.text();
                 throw new Error("一覧取得失敗: " + errText);
             }
-            return await dbResponse.json();
+            const data = await response.json();
+            return data.projects || [];
         }
 
         static async deleteProject(id) {
-            const { supabaseUrl, supabaseKey } = this.getDbConfig();
-
-            // 1. Get paths
-            const fetchEndpoint = `${supabaseUrl}/rest/v1/${TABLE_NAME}?select=storage_path,thumbnail_path&id=eq.${id}&apikey=${supabaseKey}`;
-            const fetchRes = await fetch(fetchEndpoint, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
-            let paths = [];
-            if (fetchRes.ok) {
-                const rows = await fetchRes.json();
-                if (rows.length) {
-                    paths.push(rows[0].storage_path);
-                    if (rows[0].thumbnail_path) paths.push(rows[0].thumbnail_path);
-                }
-            }
-
-            // 2. Delete from DB
-            const dbEndpoint = `${supabaseUrl}/rest/v1/${TABLE_NAME}?id=eq.${id}&apikey=${supabaseKey}`;
-            const dbResponse = await fetch(dbEndpoint, {
+            const token = await this.getAuthToken();
+            const response = await fetch(`${API_BASE}/api/projects/${id}`, {
                 method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' }
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
             });
 
-            if (!dbResponse.ok) throw new Error("削除失敗");
-
-            // 3. Delete files from Storage
-            if (paths.length > 0) {
-                await window.supabase.storage.from(BUCKET_NAME).remove(paths);
-            }
+            if (!response.ok) throw new Error("削除失敗");
         }
     }
 
