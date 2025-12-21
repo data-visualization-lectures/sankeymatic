@@ -162,6 +162,55 @@
 
     // Global UI handling for Cloud Operations
     window.CloudUI = {
+        // --- TOAST UI ---
+        showToast: (message, type = 'info') => {
+            let toastContainer = document.getElementById('cloud-toast-container');
+            if (!toastContainer) {
+                toastContainer = document.createElement('div');
+                toastContainer.id = 'cloud-toast-container';
+                toastContainer.style.cssText = "position: fixed; bottom: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none;";
+                document.body.appendChild(toastContainer);
+            }
+
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            const bg = type === 'success' ? '#4caf50' : (type === 'error' ? '#f44336' : '#333');
+            toast.style.cssText = `
+                background: ${bg};
+                color: white;
+                padding: 12px 24px;
+                border-radius: 4px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                font-size: 14px;
+                opacity: 0;
+                transform: translateY(20px);
+                transition: opacity 0.3s, transform 0.3s;
+                min-width: 200px;
+                text-align: center;
+                pointer-events: auto;
+            `;
+
+            toastContainer.appendChild(toast);
+
+            // Animate in
+            requestAnimationFrame(() => {
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateY(0)';
+            });
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    toast.remove();
+                    if (toastContainer.childNodes.length === 0) {
+                        toastContainer.remove();
+                    }
+                }, 300);
+            }, 3000);
+        },
+
         // --- SAVE UI ---
         openSaveModal: (currentData, thumbnailBlob) => {
             window.CloudUI.pendingSaveData = currentData;
@@ -206,10 +255,10 @@
 
                     try {
                         await CloudApi.saveProject(name, window.CloudUI.pendingSaveData, window.CloudUI.pendingThumbnail);
-                        alert("保存しました。");
+                        window.CloudUI.showToast("保存しました。", "success");
                         modal.close();
                     } catch (e) {
-                        alert(`保存エラー: ${e.message}`);
+                        window.CloudUI.showToast(`保存エラー: ${e.message}`, "error");
                     } finally {
                         btn.disabled = false;
                         btn.textContent = originalText;
