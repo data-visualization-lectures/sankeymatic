@@ -97,6 +97,21 @@
 
             if (!response.ok) throw new Error("削除失敗");
         }
+
+        static async getProjectThumbnail(projectId) {
+            const token = await this.getAuthToken();
+            const response = await fetch(`${API_BASE}/api/projects/${projectId}/thumbnail`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.status === 404) return null;
+            if (!response.ok) throw new Error("Thumbnail fetch failed");
+
+            return await response.blob();
+        }
     }
 
     // Global UI handling for Cloud Operations
@@ -306,22 +321,20 @@
                     }
 
                     try {
-                        if (window.supabase) {
-                            const { data, error } = await window.supabase.storage
-                                .from('user_projects')
-                                .download(p.thumbnail_path);
+                        const blob = await CloudApi.getProjectThumbnail(p.id);
 
-                            if (error) throw error;
+                        const imgEl = document.getElementById(`thumb-${p.id}`);
+                        const loadingEl = document.getElementById(`loading-${p.id}`);
 
-                            const url = URL.createObjectURL(data);
-                            const imgEl = document.getElementById(`thumb-${p.id}`);
-                            const loadingEl = document.getElementById(`loading-${p.id}`);
-
+                        if (blob) {
+                            const url = URL.createObjectURL(blob);
                             if (imgEl && loadingEl) {
                                 imgEl.src = url;
                                 imgEl.style.display = 'block';
                                 loadingEl.style.display = 'none';
                             }
+                        } else {
+                            if (loadingEl) loadingEl.textContent = 'No Image';
                         }
                     } catch (err) {
                         console.warn(`Thumbnail load failed ${p.id}`, err);
