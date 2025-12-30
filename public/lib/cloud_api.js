@@ -5,8 +5,8 @@
 
     class CloudApi {
         static async getAuthToken() {
-            if (!window.supabase) throw new Error("Supabase client not initialized");
-            const { data: { session } } = await window.supabase.auth.getSession();
+            if (!window.datavizSupabase) throw new Error("Supabase client not initialized");
+            const { data: { session } } = await window.datavizSupabase.auth.getSession();
             if (!session?.access_token) throw new Error("Not authenticated");
             return session.access_token;
         }

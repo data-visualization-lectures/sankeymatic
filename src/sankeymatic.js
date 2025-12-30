@@ -2399,10 +2399,10 @@ ${sourceURLLine}
           return;
         }
 
-        if (window.CloudApi && window.supabase) {
+        if (window.CloudApi && window.datavizSupabase) {
           clearInterval(initCheck);
           // Wait for session to be established
-          const { data: { session } } = await window.supabase.auth.getSession();
+          const { data: { session } } = await window.datavizSupabase.auth.getSession();
           if (session) {
             const loadingIndicator = document.createElement('div');
             loadingIndicator.textContent = "Loading Project...";
