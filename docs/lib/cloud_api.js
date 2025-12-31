@@ -1,12 +1,12 @@
 /* cloud_api.js - Wrapped to avoid global namespace pollution */
 (function () {
     const APP_ID = "sankeymatic";
-    const API_BASE = "https://api.dataviz.jp";
+    const API_BASE = window.datavizApiUrl || "https://api.dataviz.jp";
 
     class CloudApi {
         static async getAuthToken() {
-            if (!window.supabase) throw new Error("Supabase client not initialized");
-            const { data: { session } } = await window.supabase.auth.getSession();
+            if (!window.datavizSupabase) throw new Error("Supabase client not initialized");
+            const { data: { session } } = await window.datavizSupabase.auth.getSession();
             if (!session?.access_token) throw new Error("Not authenticated");
             return session.access_token;
         }
