@@ -62,7 +62,7 @@ const cookieStorage = {
 };
 
 // ---- Supabase クライアント作成 ----
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
     storage: cookieStorage,
     storageKey: AUTH_COOKIE_NAME,
@@ -70,9 +70,12 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     autoRefreshToken: true,
     detectSessionInUrl: true,
   },
-});
+}) : null;
 // 外部公開（リファクタリング対応）
-window.datavizSupabase = supabase;
+if (supabase) {
+  window.datavizSupabase = supabase;
+  window.datavizApiUrl = API_BASE_URL;
+}
 
 
 // =========================================================================

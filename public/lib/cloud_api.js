@@ -1,7 +1,7 @@
 /* cloud_api.js - Wrapped to avoid global namespace pollution */
 (function () {
     const APP_ID = "sankeymatic";
-    const API_BASE = "https://api.dataviz.jp";
+    const API_BASE = window.datavizApiUrl || "https://api.dataviz.jp";
 
     class CloudApi {
         static async getAuthToken() {
