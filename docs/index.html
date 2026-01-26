@@ -10,6 +10,7 @@
   <script src="https://cdn.jsdelivr.net/npm/canvg@3/lib/umd.js" crossorigin="anonymous"></script>
   <script src="https://auth.dataviz.jp/lib/supabase.js"></script>
   <script src="https://auth.dataviz.jp/lib/dataviz-auth-client.js"></script>
+  <script src="https://auth.dataviz.jp/lib/dataviz-tool-header.js" defer></script>
   <script src="./lib/sankey.js"></script>
   <script src="./lib/cloud_api.js"></script>
   <meta name="description"
@@ -32,7 +33,7 @@
   <meta name="twitter:description" content="Make beautiful flow diagrams. Export them as images or SVG." />
   <meta name="twitter:image" content="https://sankeymatic.com/i/sankeymatic-build-card-image.png" />
   <meta name="twitter:image:alt" content="Screenshot of the SankeyMATIC diagram-building interface" />
-  <script type="module" crossorigin src="./assets/main-BHnlqSov.js"></script>
+  <script type="module" crossorigin src="./assets/main-B4V2ALL1.js"></script>
   <link rel="stylesheet" crossorigin href="./assets/main-l-ODDf2w.css">
 </head>
 <!-- Google tag (gtag.js) -->
@@ -56,12 +57,7 @@
         <ul>
           <li><a title="SankeyMATIC home page" href="/"><img alt="SankeyMATIC logo" src="./assets/SKM-trsp-300-DUBTLorw.png" height="27"
                 width="27" class="skm_logo_small" />&nbsp;<strong>SankeyMATIC</strong></a></li>
-          <li>
-            <button type="button" onclick="saveCloudProjectUI(); return false;" class="nav_button"
-              style="cursor: pointer; color: #000; background: #ddd; padding: 2px 8px; border: none; border-radius: 4px; font-size: 13px; margin-left: 5px;">プロジェクト・ファイルの保存</button>
-            <button type="button" onclick="loadCloudProjectUI(); return false;" class="nav_button"
-              style="cursor: pointer; color: #000; background: #ddd; padding: 2px 8px; border: none; border-radius: 4px; font-size: 13px; margin-left: 10px;">プロジェクト・ファイルの読込</button>
-          </li>
+          
           <!-- <li><a title="Build a Sankey Diagram" href="/build/">Build a Sankey Diagram</a></li>
   <li><a title="How to use SankeyMATIC to the fullest" href="/manual/">Manual</a></li>
   <li><a title="What's New with SankeyMATIC'" href="/news/">News</a></li>
@@ -71,6 +67,8 @@
       </div>
     </nav>
   </header>
+
+  <dataviz-tool-header></dataviz-tool-header>
 
   <main>
     <div class="center_basic">
