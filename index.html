@@ -10,6 +10,7 @@
   <script src="https://cdn.jsdelivr.net/npm/canvg@3/lib/umd.js" crossorigin="anonymous"></script>
   <script src="https://auth.dataviz.jp/lib/supabase.js"></script>
   <script src="https://auth.dataviz.jp/lib/dataviz-auth-client.js"></script>
+  <script src="https://auth.dataviz.jp/lib/dataviz-tool-header.js" defer></script>
   <script src="/lib/sankey.js"></script>
   <script src="/lib/cloud_api.js"></script>
   <script type="module" src="/src/main.js"></script>
@@ -55,12 +56,7 @@
         <ul>
           <li><a title="SankeyMATIC home page" href="/"><img alt="SankeyMATIC logo" src="i/SKM-trsp-300.png" height="27"
                 width="27" class="skm_logo_small" />&nbsp;<strong>SankeyMATIC</strong></a></li>
-          <li>
-            <button type="button" onclick="saveCloudProjectUI(); return false;" class="nav_button"
-              style="cursor: pointer; color: #000; background: #ddd; padding: 2px 8px; border: none; border-radius: 4px; font-size: 13px; margin-left: 5px;">プロジェクト・ファイルの保存</button>
-            <button type="button" onclick="loadCloudProjectUI(); return false;" class="nav_button"
-              style="cursor: pointer; color: #000; background: #ddd; padding: 2px 8px; border: none; border-radius: 4px; font-size: 13px; margin-left: 10px;">プロジェクト・ファイルの読込</button>
-          </li>
+          
           <!-- <li><a title="Build a Sankey Diagram" href="/build/">Build a Sankey Diagram</a></li>
   <li><a title="How to use SankeyMATIC to the fullest" href="/manual/">Manual</a></li>
   <li><a title="What's New with SankeyMATIC'" href="/news/">News</a></li>
@@ -70,6 +66,8 @@
       </div>
     </nav>
   </header>
+
+  <dataviz-tool-header></dataviz-tool-header>
 
   <main>
     <div class="center_basic">
