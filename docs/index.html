@@ -33,7 +33,7 @@
   <meta name="twitter:description" content="Make beautiful flow diagrams. Export them as images or SVG." />
   <meta name="twitter:image" content="https://sankeymatic.com/i/sankeymatic-build-card-image.png" />
   <meta name="twitter:image:alt" content="Screenshot of the SankeyMATIC diagram-building interface" />
-  <script type="module" crossorigin src="./assets/main-B4V2ALL1.js"></script>
+  <script type="module" crossorigin src="./assets/main-D3PTKKxa.js"></script>
   <link rel="stylesheet" crossorigin href="./assets/main-l-ODDf2w.css">
 </head>
 <!-- Google tag (gtag.js) -->
@@ -48,25 +48,7 @@
 <!-- Google tag (gtag.js) -->
 
 <body>
-  <header>
-    <nav id="top_nav" class="main_nav_behavior">
-      <label for="top_nav_checkbox" id="top_nav_icon" class="main_nav_icon">&#9776; &nbsp; SankeyMATIC</label>
-      <input id="top_nav_checkbox" class="main_nav_checkbox" type="checkbox" />
-      <!-- [MENU ITEMS] -->
-      <div id="top_nav_items" class="main_nav_items">
-        <ul>
-          <li><a title="SankeyMATIC home page" href="/"><img alt="SankeyMATIC logo" src="./assets/SKM-trsp-300-DUBTLorw.png" height="27"
-                width="27" class="skm_logo_small" />&nbsp;<strong>SankeyMATIC</strong></a></li>
-          
-          <!-- <li><a title="Build a Sankey Diagram" href="/build/">Build a Sankey Diagram</a></li>
-  <li><a title="How to use SankeyMATIC to the fullest" href="/manual/">Manual</a></li>
-  <li><a title="What's New with SankeyMATIC'" href="/news/">News</a></li>
-  <li><a title="Gallery of Sankey Examples" href="/gallery/">Gallery</a></li>
-  <li><a title="About SankeyMATIC and how to support the site" href="/about/">About/Donate</a></li> -->
-        </ul>
-      </div>
-    </nav>
-  </header>
+
 
   <dataviz-tool-header></dataviz-tool-header>
 
@@ -74,30 +56,7 @@
     <div class="center_basic">
 
       <form id="skm_form" onsubmit="process_sankey(); return false;">
-        <div id="example_diagrams" class="text_center">
-          <h4>サンプル・ダイアグラム:
-            <button type="button" id="load_example_simple"
-              onclick="replaceGraph('simple_start'); return false;">シンプル</button>
-            <button type="button" id="load_example_financial_results"
-              onclick="replaceGraph('financial_results'); return false;">決算</button>
-            <button type="button" id="load_example_job_search"
-              onclick="replaceGraph('job_search'); return false;">就職・転職活動</button>
-            <button type="button" id="load_example_election"
-              onclick="replaceGraph('election'); return false;">選好投票</button>
-            <!-- <button type="button" id="load_example_energy_all" onclick="replaceGraph('energy_flows_all'); return false;">Energy Flows</button> &nbsp; -->
-            <button type="button" id="load_example_basic_budget"
-              onclick="replaceGraph('default_budget'); return false;">予算</button>
-          </h4>
-
-          <p id="replace_graph_warning" style="display: none;">
-            <em>現在のプロジェクトを<strong>置き換えて</strong>してしまいます。本当に実行しますか？</em><br />
-            <input type="hidden" id="demo_graph_chosen" value="" />
-            <button type="button" id="replace_graph_yes"
-              onclick="replaceGraphConfirmed(); return false;">はい、置き換えてください</button>
-            <button type="button" id="replace_graph_no"
-              onclick="hideReplaceGraphWarning(); return false;">キャンセル</button>
-          </p>
-        </div>
+        
 
         <table>
           <tr>
