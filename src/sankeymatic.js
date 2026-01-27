@@ -360,7 +360,7 @@ Requires:
   // settingIsValid(metadata, human value, size object {w: _, h: _}):
   // return [true, computer value] IF the given value meets the criteria.
   // Note: The 'size' object is only used when validating 'contained' settings.
-  function settingIsValid(sData, hVal, cfg) {
+  glob.settingIsValid = function settingIsValid(sData, hVal, cfg) {
     const [dataType, defaultVal, allowList] = sData;
 
     // Checkboxes: Translate y/n/Y/N/Yes/No to true/false.
@@ -436,7 +436,7 @@ Requires:
 
   // setValueOnPage(name, type, computer-friendly value):
   // Given a valid value, update the field on the page to adopt it:
-  function setValueOnPage(sName, dataType, cVal) {
+  glob.setValueOnPage = function setValueOnPage(sName, dataType, cVal) {
     // console.log(sName, dataType, cVal);
     switch (dataType) {
       case 'radio': radioRef(sName).value = cVal; break;
