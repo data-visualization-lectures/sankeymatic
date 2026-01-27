@@ -2430,7 +2430,7 @@ ${sourceURLLine}
 
             } catch (e) {
               console.error("Auto-load failed", e);
-              alert("プロジェクトの読み込みに失敗しました: " + e.message);
+              window.toolHeaderInstance?.showMessage("プロジェクトの自動読み込みに失敗しました: " + e.message, 'error', 5000); // Use integrated toast
             } finally {
               loadingIndicator.remove();
             }

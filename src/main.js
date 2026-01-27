@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const toolHeader = document.querySelector('dataviz-tool-header');
 
   if (toolHeader) {
+    window.toolHeaderInstance = toolHeader; // Globalize toolHeader instance
+
     // Helper function to show messages
     const showMessage = (message, type = 'info', duration = 3000) => {
       toolHeader.showMessage(message, type, duration);
@@ -31,10 +33,10 @@ document.addEventListener('DOMContentLoaded', () => {
       showMessage('プロジェクトを保存しています...', 'info');
       try {
         await originalSaveCloudProjectUI(); // Execute original save logic
-        showMessage('プロジェクトが正常に保存されました！', 'success');
+        // No success/error toast here, assuming CloudUI handles its own feedback
       } catch (error) {
         console.error('保存失敗:', error);
-        showMessage('プロジェクトの保存に失敗しました。', 'error', 5000);
+        // No error toast here, assuming CloudUI handles its own feedback
       }
     };
 
@@ -42,10 +44,10 @@ document.addEventListener('DOMContentLoaded', () => {
       showMessage('プロジェクトを読み込んでいます...', 'info');
       try {
         await originalLoadCloudProjectUI(); // Execute original load logic
-        showMessage('プロジェクトが正常に読み込まれました！', 'success');
+        // No success/error toast here, assuming CloudUI handles its own feedback
       } catch (error) {
         console.error('読み込み失敗:', error);
-        showMessage('プロジェクトの読み込みに失敗しました。', 'error', 5000);
+        // No error toast here, assuming CloudUI handles its own feedback
       }
     };
 
