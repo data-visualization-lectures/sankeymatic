@@ -7,6 +7,7 @@ import './project_id_rescue.js';
 import './constants.js';
 
 import './sankeymatic.js';
+import logoImage from '../i/SKM-trsp-300.png';
 
 
 // =========================================================================
@@ -101,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
       backgroundColor: '#035', // Dark blue from original SankeyMATIC header
       logo: {
         type: 'image-and-text',
-        src: '/i/SKM-trsp-300.png', // Original image path
+        src: logoImage, // Use imported image variable
         text: 'SankeyMATIC',
         alt: 'SankeyMATIC logo',
         textClass: 'font-bold text-lg', // Example Tailwind classes for the text
