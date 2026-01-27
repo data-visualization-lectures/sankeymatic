@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Then select all the existing input text...
         const flowsEl = document.getElementById(window.userInputsField); // Access global userInputsField
         if (!flowsEl) {
-            throw new Error(`Flows input element '${window.userInputsField}' not found.`);
+          throw new Error(`Flows input element '${window.userInputsField}' not found.`);
         }
         flowsEl.focus();
         flowsEl.select();
@@ -110,16 +110,9 @@ document.addEventListener('DOMContentLoaded', () => {
       },
       buttons: [
         {
-          label: 'プロジェクトの保存',
-          action: handleSaveProject
-        },
-        {
-          label: 'プロジェクトの読込',
-          action: handleLoadProject
-        },
-        {
           label: 'サンプル', // Dropdown button for samples
           type: 'dropdown',
+          align: 'left',
           items: [
             {
               label: 'シンプル',
@@ -142,6 +135,23 @@ document.addEventListener('DOMContentLoaded', () => {
               action: () => handleLoadSample('default_budget')
             }
           ]
+        },
+        {
+          label: 'プロジェクトの保存',
+          action: handleSaveProject,
+          align: 'right'
+        },
+        {
+          label: 'プロジェクトの読込',
+          action: handleLoadProject,
+          align: 'right'
+        },
+        {
+          label: 'ヘルプ',
+          type: 'link',
+          href: '/tutorials/sankeymatic/',
+          target: '_blank',
+          align: 'right'
         }
       ]
     });
