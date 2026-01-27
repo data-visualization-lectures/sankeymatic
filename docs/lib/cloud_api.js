@@ -118,6 +118,12 @@
     window.CloudUI = {
         // --- TOAST UI ---
         showToast: (message, type = 'info') => {
+            // Use Tool Header Toast if available
+            if (window.toolHeaderInstance && typeof window.toolHeaderInstance.showMessage === 'function') {
+                window.toolHeaderInstance.showMessage(message, type, 5000);
+                return;
+            }
+
             let toastContainer = document.getElementById('cloud-toast-container');
             if (!toastContainer) {
                 toastContainer = document.createElement('div');
@@ -366,7 +372,7 @@
                             modal.close();
                             if (onLoadCallback) onLoadCallback(actualData);
                         } catch (err) {
-                            alert("読み込みエラー: " + err.message);
+                            window.CloudUI.showToast("読み込みエラー: " + err.message, "error");
                             btn.disabled = false;
                             btn.textContent = originalText;
                         }
@@ -377,7 +383,7 @@
                             await CloudApi.deleteProject(id);
                             window.CloudUI.openLoadModal(onLoadCallback);
                         } catch (err) {
-                            alert("削除エラー: " + err.message);
+                            window.CloudUI.showToast("削除エラー: " + err.message, "error");
                         }
                     }
                 };
