@@ -110,11 +110,11 @@ document.addEventListener('DOMContentLoaded', () => {
       },
       buttons: [
         {
-          label: 'プロジェクトを保存',
+          label: 'プロジェクトの保存',
           action: handleSaveProject
         },
         {
-          label: 'プロジェクトを読み込む',
+          label: 'プロジェクトの読込',
           action: handleLoadProject
         },
         {
