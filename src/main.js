@@ -90,10 +90,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Take away any remembered moves ... & immediately draw the new diagram::
         window.resetMovesAndRender(); // Access global resetMovesAndRender
 
-        showMessage(`サンプル (${graphType}) が読み込まれました！`, 'success');
+        showMessage(`サンプルデータ (${graphType}) が読み込まれました！`, 'success');
       } catch (error) {
-        console.error('サンプル読み込み失敗:', error);
-        showMessage(`サンプル (${graphType}) の読み込みに失敗しました。`, 'error', 5000);
+        console.error('サンプルデータ読み込み失敗:', error);
+        showMessage(`サンプルデータ (${graphType}) の読み込みに失敗しました。`, 'error', 5000);
       }
     };
 
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
       },
       buttons: [
         {
-          label: 'サンプル', // Dropdown button for samples
+          label: 'サンプルデータ', // Dropdown button for samples
           type: 'dropdown',
           align: 'left',
           items: [
