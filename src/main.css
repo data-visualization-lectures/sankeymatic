@@ -1,7 +1,18 @@
+/* Header positioning to prevent overlap */
+/* Common header (dataviz-header) is injected with position:fixed, top:0, height:48px, z-index:99999 */
+/* Tool header needs to be positioned below it */
+dataviz-tool-header {
+  position: sticky;
+  top: 48px; /* Position below the 48px common header */
+  z-index: 1000;
+  width: 100%;
+}
+
 body {
   font-family: sans-serif;
   background-color: #FBFDFD;
   margin: 0;
+  padding-top: 0;
 }
 
 p#buildlink {
@@ -9,7 +20,10 @@ p#buildlink {
   padding-top: 20px;
 }
 
-main { margin: 1em; }
+main { 
+  margin: 1em;
+  margin-top: 100px; /* Space for common header (48px) + tool header (~48px) */
+}
 
 div#main,
 p#buildlink,
