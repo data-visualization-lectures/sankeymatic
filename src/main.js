@@ -145,13 +145,6 @@ document.addEventListener('DOMContentLoaded', () => {
           label: 'プロジェクトの読込',
           action: handleLoadProject,
           align: 'right'
-        },
-        {
-          label: 'ヘルプ',
-          type: 'link',
-          href: '/tutorials/sankeymatic/',
-          target: '_blank',
-          align: 'right'
         }
       ]
     });
