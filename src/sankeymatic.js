@@ -570,7 +570,7 @@ Requires:
     if (!savedRecipe) {
       // (This shouldn't happen unless the user is messing around in the DOM)
       msg.add(
-        `Requested sample diagram ${highlightSafeValue(graphName)} not found.`,
+        t('msg.sampleNotFound', { value: highlightSafeValue(graphName) }),
         'issue'
       );
       return null;
@@ -596,8 +596,7 @@ Requires:
       // Show the warning and do NOT replace the graph:
       el('replace_graph_warning').style.display = '';
       el('replace_graph_yes').textContent
-        // = `Yes, replace the graph with '${savedRecipe.name}'`;
-        = `はい '${savedRecipe.name}'と置き換えてください`;
+        = t('msg.replaceConfirm', { name: savedRecipe.name });
     }
 
     return null;
@@ -1781,11 +1780,11 @@ ${sourceURLLine}
           // The setting exists but the value wasn't right:
           warnAbout(
             settingValue,
-            `Invalid value for <strong>${origSettingName}<strong>`
+            t('msg.invalidSettingValue', { name: origSettingName })
           );
         } else {
           // There wasn't a setting matching this name:
-          warnAbout(origSettingName, 'Not a valid setting name');
+          warnAbout(origSettingName, t('msg.invalidSettingName'));
         }
       }
     });
@@ -1825,12 +1824,12 @@ ${sourceURLLine}
           // if it really isn't:
           const amountIn = matches[2].replace(/\s/g, '');
           if (!isNumeric(amountIn)) {
-            warnAbout(lineIn, 'The Amount is not a valid decimal number');
+            warnAbout(lineIn, t('msg.invalidAmount'));
             return;
           }
           // Diagrams don't currently support negative numbers or 0:
           if (amountIn <= 0) {
-            warnAbout(lineIn, 'Amounts must be greater than 0');
+            warnAbout(lineIn, t('msg.amountPositive'));
             return;
           }
 
@@ -1855,7 +1854,7 @@ ${sourceURLLine}
         // This is a non-blank line which did not match any pattern:
         warnAbout(
           lineIn,
-          'Does not match the format of a Flow or Node or Setting'
+          t('msg.invalidFormat')
         );
       });
 
@@ -1990,7 +1989,7 @@ ${sourceURLLine}
     if (updatedSourceLines[0].startsWith(sourceHeaderPrefix)) {
       // Drop all the auto-generated content and all successful settings:
       el(userInputsField).value = removeAutoLines(updatedSourceLines);
-      if (fileName) { msg.add(`Imported <strong>${fileName}</strong>.`); }
+      if (fileName) { msg.add(t('msg.imported', { fileName: fileName })); }
     } else {
       el(userInputsField).value = updatedSourceLines.join('\n');
     }
@@ -1998,10 +1997,7 @@ ${sourceURLLine}
     // Were there any good flows at all? If not, offer a little help and then
     // EXIT EARLY:
     if (!goodFlows.length) {
-      msg.add(
-        'Enter a list of Flows &mdash; one per line. '
-        + 'See the <a href="/manual/" target="_blank">Manual</a> for more help.'
-      );
+      msg.add(t('msg.noFlows'));
 
       // Clear the contents of the graph in case there was an old graph left
       // over:
@@ -2057,8 +2053,7 @@ ${sourceURLLine}
         .sort((a, b) => b - a)
         .map((v) => withUnits(v))
         .join(' + ');
-      return `<dfn title="${formattedSum} from ${flowCt} `
-        + `Flows: ${breakdown}">${formattedSum}</dfn>`;
+      return `<dfn title="${t('msg.flowsFrom', { sum: formattedSum, count: flowCt, breakdown: breakdown })}">${formattedSum}</dfn>`;
     }
 
     // Given maxDecimalPlaces, we can derive the smallest important
@@ -2117,7 +2112,7 @@ ${sourceURLLine}
     if (!disableDifferenceControls && approvedCfg.meta_listimbalances) {
       // Construct a hyper-informative error message about any differences:
       const differenceRows = [
-        '<tr><td></td><th>Total In</th><th>Total Out</th><th>Difference</th></tr>',
+        `<tr><td></td><th>${t('msg.tableIn')}</th><th>${t('msg.tableOut')}</th><th>${t('msg.tableDiff')}</th></tr>`,
       ];
       // Make a nice table of the differences:
       differences.forEach((diffRec) => {
@@ -2136,18 +2131,17 @@ ${sourceURLLine}
 
     // Reflect summary stats to the user:
     let totalsMsg
-      = `<strong>${approvedNodes.length} ノード</strong> 間に `
-      + `<strong>${approvedFlows.length} フロー</strong>  `;
+      = t('msg.summary', { nodeCount: approvedNodes.length, flowCount: approvedFlows.length });
 
 
     // Do the totals match? If not, mention the different totals:
     if (Math.abs(grandTotal[IN] - grandTotal[OUT]) > epsilonDifference) {
       const gtLt = grandTotal[IN] > grandTotal[OUT] ? '&gt;' : '&lt;';
       totalsMsg
-        += `Total Inputs: <strong>${withUnits(grandTotal[IN])}</strong> ${gtLt}`
-        + ` Total Outputs: <strong>${withUnits(grandTotal[OUT])}</strong>`;
+        += `${t('msg.totalInputs')} <strong>${withUnits(grandTotal[IN])}</strong> ${gtLt}`
+        + ` ${t('msg.totalOutputs')} <strong>${withUnits(grandTotal[OUT])}</strong>`;
     } else {
-      totalsMsg += 'トータル・インプット = トータル・アウトプット = '
+      totalsMsg += t('msg.totalEqual')
         + `<strong>${withUnits(grandTotal[IN])}</strong> &#9989;`;
     }
     msg.add(totalsMsg, 'total');
@@ -2170,8 +2164,7 @@ ${sourceURLLine}
         { ...numberStyle, decimalPlaces: 4 }
       );
     el('scale_figures').innerHTML
-      = `<strong>${unitsPerPixel}</strong> per pixel `
-      + `(${withUnits(maxNodeVal)}/${formattedPixelCount}px)`;
+      = t('msg.scaleInfo', { unitsPerPixel: unitsPerPixel, total: withUnits(maxNodeVal), pixels: formattedPixelCount });
 
     updateResetNodesUI();
 
@@ -2405,7 +2398,7 @@ ${sourceURLLine}
           const { data: { session } } = await window.datavizSupabase.auth.getSession();
           if (session) {
             const loadingIndicator = document.createElement('div');
-            loadingIndicator.textContent = "Loading Project...";
+            loadingIndicator.textContent = t('msg.loadingProject');
             loadingIndicator.style.cssText = "position:fixed;top:10px;right:10px;background:#036;color:#fff;padding:15px;border-radius:5px;z-index:9999;box-shadow:0 2px 10px rgba(0,0,0,0.3);";
             document.body.appendChild(loadingIndicator);
 
@@ -2430,7 +2423,7 @@ ${sourceURLLine}
 
             } catch (e) {
               console.error("Auto-load failed", e);
-              window.toolHeaderInstance?.showMessage("プロジェクトの自動読み込みに失敗しました: " + e.message, 'error', 5000); // Use integrated toast
+              window.toolHeaderInstance?.showMessage(t('msg.autoLoadFailed') + e.message, 'error', 5000); // Use integrated toast
             } finally {
               loadingIndicator.remove();
             }
@@ -2446,7 +2439,7 @@ ${sourceURLLine}
 
 // Make the linter happy about imported objects:
 /* global
- d3 canvg global IN OUT BEFORE AFTER
+ t d3 canvg global IN OUT BEFORE AFTER
  sampleDiagramRecipes fontMetrics highlightStyles
  settingsMarker settingsAppliedPrefix
  userDataMarker sourceHeaderPrefix sourceURLLine
