@@ -247,6 +247,9 @@ Requires:
     return [scaled, canvasEl.toDataURL('image/png')];
   }
 
+  // Expose scaledPNG for use from main.js (project save thumbnail)
+  glob.scaledPNG = scaledPNG;
+
   // downloadABlob: given an object & a filename, send it to the user:
   function downloadADataURL(dataURL, name) {
     const newA = document.createElement('a');
@@ -2245,50 +2248,32 @@ ${sourceURLLine}
     return new Blob([ab], { type: mimeString });
   }
 
-  glob.saveCloudProjectUI = async () => {
-    // 1. Gather Settings
+  // gatherDiagramData: Collect current diagram state as a serializable object
+  glob.gatherDiagramData = () => {
     const settings = {};
     skmSettings.forEach((fldData, fldName) => {
       if (!fldName.startsWith('internal_')) {
-        const dataType = fldData[0];
-        settings[fldName] = getHumanValueFromPage(fldName, dataType);
+        settings[fldName] = getHumanValueFromPage(fldName, fldData[0]);
       }
     });
 
-    // 2. Gather Flows
     const flows = removeAutoLines(elV(userInputsField).split('\n'));
 
-    // 3. Gather Moves
     const moves = {};
     glob.rememberedMoves.forEach((move, nodeName) => {
       moves[nodeName] = move;
     });
 
-    // 4. Construct Object
-    const diagramData = {
+    return {
       metadata: {
         saved_at: new Date().toISOString(),
         generator: 'SankeyMATIC',
-        version: '1.0'
+        version: '1.0',
       },
-      settings: settings,
-      flows: flows,
-      moves: moves
+      settings,
+      flows,
+      moves,
     };
-
-    // 5. Generate Thumbnail
-    const [size, pngDataURL] = await scaledPNG(1);
-
-    // Pass Base64 string directly - robust and supported by updated CloudApi
-    // const thumbBlob = dataURItoBlob(pngDataURL);
-
-    window.CloudUI.openSaveModal(diagramData, pngDataURL);
-  };
-
-  glob.loadCloudProjectUI = () => {
-    window.CloudUI.openLoadModal((data) => {
-      glob.loadProjectData(data);
-    });
   };
 
   glob.loadProjectData = (jsonData) => {
@@ -2377,61 +2362,33 @@ ${sourceURLLine}
   });
 
   // --- Auto-load from query param (Cloud Launch) ---
-  window.addEventListener('load', () => {
+  window.addEventListener('load', async () => {
     const params = new URLSearchParams(window.location.search);
-    // Use rescued ID if URL param is gone
     const projectId = params.get('project_id') || window.SKM_PROJECT_ID;
-    if (projectId) {
-      console.log("Found project_id:", projectId);
-      let attempts = 0;
-      const initCheck = setInterval(async () => {
-        attempts++;
-        if (attempts > 50) { // Timeout after 25s
-          clearInterval(initCheck);
-          console.error("Timeout waiting for CloudApi/Supabase");
-          return;
-        }
+    if (!projectId) return;
 
-        if (window.CloudApi && window.datavizSupabase) {
-          clearInterval(initCheck);
-          // Wait for session to be established
-          const { data: { session } } = await window.datavizSupabase.auth.getSession();
-          if (session) {
-            const loadingIndicator = document.createElement('div');
-            loadingIndicator.textContent = t('msg.loadingProject');
-            loadingIndicator.style.cssText = "position:fixed;top:10px;right:10px;background:#036;color:#fff;padding:15px;border-radius:5px;z-index:9999;box-shadow:0 2px 10px rgba(0,0,0,0.3);";
-            document.body.appendChild(loadingIndicator);
+    console.log('Found project_id:', projectId);
 
-            try {
-              const data = await window.CloudApi.loadProject(projectId);
-              console.log("Project loaded:", data);
+    try {
+      await customElements.whenDefined('dataviz-tool-header');
+      const header = document.querySelector('dataviz-tool-header');
+      if (!header) throw new Error('dataviz-tool-header not found');
 
-              // Unwrapping logic
-              let actualData = data;
-              if (actualData.data && (!actualData.flows && !actualData.settings)) {
-                actualData = actualData.data;
-              }
-              if (typeof actualData === 'string' && actualData.trim().startsWith('{')) {
-                try { actualData = JSON.parse(actualData); } catch (e) { }
-              }
+      // Programmatic load (does NOT fire onProjectLoad callback)
+      const projectData = await header.loadProject(projectId);
+      console.log('Project loaded:', projectData);
 
-              glob.loadProjectData(actualData);
+      glob.loadProjectData(projectData);
 
-              // Clean URL
-              const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-              window.history.replaceState({ path: newUrl }, '', newUrl);
+      // Clean URL
+      const newUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+      window.history.replaceState({ path: newUrl }, '', newUrl);
 
-            } catch (e) {
-              console.error("Auto-load failed", e);
-              window.toolHeaderInstance?.showMessage(t('msg.autoLoadFailed') + e.message, 'error', 5000); // Use integrated toast
-            } finally {
-              loadingIndicator.remove();
-            }
-          } else {
-            console.warn("No session found for auto-load");
-          }
-        }
-      }, 500);
+    } catch (e) {
+      console.error('Auto-load failed', e);
+      window.toolHeaderInstance?.showMessage(
+        t('msg.autoLoadFailed') + e.message, 'error', 5000
+      );
     }
   });
 

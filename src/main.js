@@ -23,36 +23,31 @@ document.addEventListener('DOMContentLoaded', () => {
   if (toolHeader) {
     window.toolHeaderInstance = toolHeader; // Globalize toolHeader instance
 
+    // Project state tracking
+    let currentProjectId = null;
+    let currentProjectName = null;
+
     // Helper function to show messages
     const showMessage = (message, type = 'info', duration = 3000) => {
       toolHeader.showMessage(message, type, duration);
     };
 
-    // Original functions that need to be wrapped (originalReplaceGraph is removed)
-    const originalSaveCloudProjectUI = window.saveCloudProjectUI;
-    const originalLoadCloudProjectUI = window.loadCloudProjectUI;
-
-    // Wrapped functions to use the new toast UI
+    // Save: gather diagram data and open the header's save modal
     const handleSaveProject = async () => {
-      showMessage(t('header.saving'), 'info');
-      try {
-        await originalSaveCloudProjectUI(); // Execute original save logic
-        // No success/error toast here, assuming CloudUI handles its own feedback
-      } catch (error) {
-        console.error(t('header.saveFailed'), error);
-        // No error toast here, assuming CloudUI handles its own feedback
-      }
+      const diagramData = window.gatherDiagramData();
+      const [size, pngDataURL] = await window.scaledPNG(1);
+
+      toolHeader.showSaveModal({
+        name: currentProjectName || undefined,
+        data: diagramData,
+        thumbnailDataUri: pngDataURL,
+        existingProjectId: currentProjectId || undefined,
+      });
     };
 
-    const handleLoadProject = async () => {
-      showMessage(t('header.loading'), 'info');
-      try {
-        await originalLoadCloudProjectUI(); // Execute original load logic
-        // No success/error toast here, assuming CloudUI handles its own feedback
-      } catch (error) {
-        console.error(t('header.loadFailed'), error);
-        // No error toast here, assuming CloudUI handles its own feedback
-      }
+    // Load: open the header's load modal (everything handled by the header)
+    const handleLoadProject = () => {
+      toolHeader.showLoadModal();
     };
 
     const handleLoadSample = (graphType) => {
@@ -159,6 +154,24 @@ document.addEventListener('DOMContentLoaded', () => {
           align: 'right'
         }
       ]
+    });
+
+    // Project management via dataviz-tool-header API
+    toolHeader.setProjectConfig({
+      appName: 'sankeymatic',
+      onProjectLoad: (projectData) => {
+        window.loadProjectData(projectData);
+      },
+      onProjectSave: (meta) => {
+        currentProjectId = meta.id;
+        currentProjectName = meta.name;
+      },
+      onProjectDelete: (projectId) => {
+        if (currentProjectId === projectId) {
+          currentProjectId = null;
+          currentProjectName = null;
+        }
+      },
     });
   }
 });
